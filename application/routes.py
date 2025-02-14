@@ -20,12 +20,3 @@ def customer_home():
         "Password": customer.password
     })
 
-@app.route('/admin_home')
-@auth_required('token')
-@roles_accepted('admin')
-def admin_home():
-    admin = current_user
-    return jsonify({
-        "Name": current_user.name,
-        "E-mail": current_user.email,
-    })
