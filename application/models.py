@@ -1,4 +1,6 @@
 from .database import db
+from sqlalchemy import CheckConstraint
+from sqlalchemy.orm import validates
 from flask_security import UserMixin, RoleMixin
 
 class User(db.Model,UserMixin):
@@ -22,13 +24,32 @@ class User(db.Model,UserMixin):
     complaint_against = db.Column(db.Boolean)
 
     # unique to service professional
-    category = db.Column(db.String, db.ForeignKey('service.category'))
-    sub_category = db.Column(db.String, db.ForeignKey('service.sub_category'))
+    serviceID = db.Column(db.Integer, db.ForeignKey('service.serviceID'), nullable = True)
     sp_experience = db.Column(db.Integer)
     sp_document = db.Column(db.String)
     sp_verified_status = db.Column(db.String)                                                   # UNVERIFIED, VERIFIED
     sp_availability = db.Column(db.String)                                                      # AVAILABLE, UNAVAILABLE
     sp_avg_rating = db.Column(db.Float)
+
+    # to access service details
+    service = db.relationship("Service", backref = 'serv_profs')
+
+    # to access service requests
+    service_requests = db.relationship('Service_Request', backref = "customer", cascade = "all, delete-orphan")
+    serv_prof_requests = db.relationship('Service_Request', foreign_keys = "[Service_Request.spID]", back_populates = "service_professional")
+
+    # validation
+    @validates('pincode')
+    def validate_pincode(self,key,value):
+        if len(str(value)) != 6:
+            raise ValueError("PIN code must be exactly 6 digits.")
+        return value
+    
+    @validates('phone_number')
+    def validate_phone_number(self,key,value):
+        if len(str(value)) != 10:
+            raise ValueError("Phone number must be exactly 10 digits.")
+        return value
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer, primary_key = True)
@@ -53,7 +74,7 @@ class Service(db.Model):
 # Service Request created by the customer
 class Service_Request(db.Model):
     s_reqID = db.Column(db.Integer, primary_key = True)
-    service_name = db.Column(db.String, db.ForeignKey('service.service_name'))
+    serviceID = db.Column(db.String, db.ForeignKey('service.serviceID'))
     customerID = db.Column(db.Integer, db.ForeignKey('user.id'))
     spID = db.Column(db.Integer, db.ForeignKey('user.id'))
     service_status = db.Column(db.String, nullable = False, default = 'REQUESTED') # REQUESTED, ASSIGNED, CLOSED
@@ -62,3 +83,12 @@ class Service_Request(db.Model):
     remarks = db.Column(db.String)
     rating = db.Column(db.Integer, nullable = False)
 
+    # relationships
+    customer = db.relationship("User", foreign_keys = [customerID], backref = "serv_reqs")
+    service_professional = db.relationship("User", foreign_keys = [spID], back_populates = "serv_prof_requests")
+
+class ServiceRequestStatus(db.Model):
+    s_req_statusID = db.Column(db.Integer, primary_key = True)
+    s_reqID = db.Column(db.Integer, db.ForeignKey('service_request.s_reqID'))
+    spID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    status = db.Column(db.String, nullable = False)
