@@ -13,22 +13,22 @@ class User(db.Model,UserMixin):
     # extra attributes:
 
     # unique to customers
-    cu_address = db.Column(db.String, nullable = False)
+    cu_address = db.Column(db.String)
 
     # common to both customers and service professionals
-    pincode = db.Column(db.Integer, nullable = False, min = 100000, max = 999999)              # has to be a 6-digit integer only
-    phone_number = db.Column(db.Integer, nullable = False, min = 100000000, max = 9999999999)  # has to be 10-digit integer only
-    flag = db.Column(db.String, nullable = False, default = "GREEN")                          # GREEN, RED
-    complaint_against = db.Column(db.Boolean, nullable = False, default = False)
+    pincode = db.Column(db.Integer)                                                             # has to be a 6-digit integer only
+    phone_number = db.Column(db.Integer)                                                        # has to be 10-digit integer only
+    flag = db.Column(db.String, default = "GREEN")                                              # GREEN, RED
+    complaint_against = db.Column(db.Boolean)
 
     # unique to service professional
     category = db.Column(db.String, db.ForeignKey('service.category'))
     sub_category = db.Column(db.String, db.ForeignKey('service.sub_category'))
-    sp_experience = db.Column(db.Integer, nullable = False, default = 1)
+    sp_experience = db.Column(db.Integer)
     sp_document = db.Column(db.String)
-    sp_verified_status = db.Column(db.String, nullable = False, default = "UNVERIFIED")         # UNVERIFIED, VERIFIED
-    sp_availability = db.Column(db.String, nullable = False, default = "AVAILABLE")             # AVAILABLE, UNAVAILABLE
-    sp_avg_rating = db.Column(db.Float, default = 0.0)
+    sp_verified_status = db.Column(db.String)                                                   # UNVERIFIED, VERIFIED
+    sp_availability = db.Column(db.String)                                                      # AVAILABLE, UNAVAILABLE
+    sp_avg_rating = db.Column(db.Float)
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer, primary_key = True)
@@ -62,4 +62,3 @@ class Service_Request(db.Model):
     remarks = db.Column(db.String)
     rating = db.Column(db.Integer, nullable = False)
 
-    
