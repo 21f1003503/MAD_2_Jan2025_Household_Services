@@ -35,8 +35,8 @@ class User(db.Model,UserMixin):
     service = db.relationship("Service", backref = 'serv_profs')
 
     # to access service requests
-    service_requests = db.relationship('Service_Request', backref = "customer", cascade = "all, delete-orphan")
-    serv_prof_requests = db.relationship('Service_Request', foreign_keys = "[Service_Request.spID]", back_populates = "service_professional")
+    #service_requests = db.relationship("Service_Request", backref = "customer", cascade = "all, delete-orphan")
+    #serv_prof_requests = db.relationship('Service_Request', foreign_keys = "[Service_Request.spID]", back_populates = "service_professional")
 
     # validation
     @validates('pincode')
@@ -85,10 +85,10 @@ class Service_Request(db.Model):
 
     # relationships
     customer = db.relationship("User", foreign_keys = [customerID], backref = "serv_reqs")
-    service_professional = db.relationship("User", foreign_keys = [spID], back_populates = "serv_prof_requests")
+    service_professional = db.relationship("User", foreign_keys = [spID], backref = "serv_prof_requests")
 
 class ServiceRequestStatus(db.Model):
     s_req_statusID = db.Column(db.Integer, primary_key = True)
-    s_reqID = db.Column(db.Integer, db.ForeignKey('service_request.s_reqID'))
+    s_reqID = db.Column(db.Integer, db.ForeignKey('service__request.s_reqID'))
     spID = db.Column(db.Integer, db.ForeignKey('user.id'))
     status = db.Column(db.String, nullable = False)

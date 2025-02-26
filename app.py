@@ -32,19 +32,28 @@ with app.app_context():
         app.security.datastore.create_user(username = "sajal@gmail.com", 
                                            password = hash_password("sajal"), 
                                            full_name = "Sajal Saxena",
-                                           roles = ['admin', 'customer', 'service_professional'])
+                                           roles = ['admin', 'customer', 'service_professional'],
+                                           )
         
     if not app.security.datastore.find_user(username = "customer01@gmail.com"):
         app.security.datastore.create_user(username = "customer01@gmail.com",
                                            password = hash_password("customer01"),
                                            full_name = "Customer 01",
-                                           roles = ["customer"])
+                                           roles = ["customer"],
+                                           cu_address = "ABC Avenue, Mumbai",
+                                           pincode = 400001,
+                                           phone_number = 9988776655,
+                                           )
     
     if not app.security.datastore.find_user(username = "sp01@gmail.com"):
         app.security.datastore.create_user(username = "sp01@gmail.com",
                                            password = hash_password("sp01"),
                                            full_name = "Service Professional 01",
-                                           roles = ["service_professional"])
+                                           roles = ["service_professional"],
+                                           pincode = 400001,
+                                           phone_number = 9988776600,
+                                           sp_experience = 1,
+                                           )
         
     db.session.commit()
 
