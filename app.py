@@ -6,7 +6,7 @@ from application.config import LocalDevelopmentConfig
 from application.resources import api
 
 from flask_security import Security, SQLAlchemyUserDatastore
-from flask_security import hash_password
+from werkzeug.security import generate_password_hash
 
 def create_app():
     app = Flask(__name__)
@@ -30,28 +30,39 @@ with app.app_context():
 
     if not app.security.datastore.find_user(username = "sajal@gmail.com"):
         app.security.datastore.create_user(username = "sajal@gmail.com", 
-                                           password = hash_password("sajal"), 
+                                           password = generate_password_hash("sajal"), 
                                            full_name = "Sajal Saxena",
                                            roles = ['admin', 'customer', 'service_professional'],
+                                           flag = "N/A",
+                                           complain_against = "N/A",
+                                           sp_experience = -1,
+                                           sp_verified_status = "N/A",
+                                           sp_availability = "N/A",
+                                           sp_avg_rating = -1.0
                                            )
         
     if not app.security.datastore.find_user(username = "customer01@gmail.com"):
         app.security.datastore.create_user(username = "customer01@gmail.com",
-                                           password = hash_password("customer01"),
+                                           password = generate_password_hash("customer01"),
                                            full_name = "Customer 01",
                                            roles = ["customer"],
                                            cu_address = "ABC Avenue, Mumbai",
                                            pincode = 400001,
-                                           phone_number = 9988776655,
+                                           phone_number = 9898989898,
+                                           sp_experience = -1,
+                                           sp_verified_status = "N/A",
+                                           sp_availability = "N/A",
+                                           sp_avg_rating = -1.0
                                            )
     
     if not app.security.datastore.find_user(username = "sp01@gmail.com"):
         app.security.datastore.create_user(username = "sp01@gmail.com",
-                                           password = hash_password("sp01"),
+                                           password = generate_password_hash("sp01"),
                                            full_name = "Service Professional 01",
                                            roles = ["service_professional"],
                                            pincode = 400001,
                                            phone_number = 9988776600,
+                                           serviceID = -1,
                                            sp_experience = 1,
                                            )
         

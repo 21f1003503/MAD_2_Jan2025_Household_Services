@@ -21,15 +21,15 @@ class User(db.Model,UserMixin):
     pincode = db.Column(db.Integer)                                                             # has to be a 6-digit integer only
     phone_number = db.Column(db.Integer)                                                        # has to be 10-digit integer only
     flag = db.Column(db.String, default = "GREEN")                                              # GREEN, RED
-    complaint_against = db.Column(db.Boolean)
+    complaint_against = db.Column(db.Boolean, default = "FALSE")
 
     # unique to service professional
     serviceID = db.Column(db.Integer, db.ForeignKey('service.serviceID'), nullable = True)
-    sp_experience = db.Column(db.Integer)
+    sp_experience = db.Column(db.Integer, default = 1)
     sp_document = db.Column(db.String)
-    sp_verified_status = db.Column(db.String)                                                   # UNVERIFIED, VERIFIED
-    sp_availability = db.Column(db.String)                                                      # AVAILABLE, UNAVAILABLE
-    sp_avg_rating = db.Column(db.Float)
+    sp_verified_status = db.Column(db.String, default = "UNVERIFIED")                           # UNVERIFIED, VERIFIED
+    sp_availability = db.Column(db.String, default = "AVAILABLE")                               # AVAILABLE, UNAVAILABLE
+    sp_avg_rating = db.Column(db.Float, default = 0.0)
 
     # to access service details
     service = db.relationship("Service", backref = 'serv_profs')
