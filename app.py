@@ -34,7 +34,7 @@ with app.app_context():
                                            full_name = "Sajal Saxena",
                                            roles = ['admin', 'customer', 'service_professional'],
                                            flag = "N/A",
-                                           complain_against = "N/A",
+                                           complaint_against = "N/A",
                                            sp_experience = -1,
                                            sp_verified_status = "N/A",
                                            sp_availability = "N/A",
@@ -62,7 +62,7 @@ with app.app_context():
                                            roles = ["service_professional"],
                                            pincode = 400001,
                                            phone_number = 9988776600,
-                                           serviceID = -1,
+                                           sp_document = "/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/sources/service_professional_documents/pablo_sarabia.jpeg",
                                            sp_experience = 1,
                                            )
         

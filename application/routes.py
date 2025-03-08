@@ -36,6 +36,7 @@ def user_login():
                     "username": user.username,
                     "full_name": user.full_name,
                     "auth-token": user.get_auth_token()
+                    
             })
             
         else:
