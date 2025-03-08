@@ -21,7 +21,7 @@ class User(db.Model,UserMixin):
     pincode = db.Column(db.Integer)                                                             # has to be a 6-digit integer only
     phone_number = db.Column(db.Integer)                                                        # has to be 10-digit integer only
     flag = db.Column(db.String, default = "GREEN")                                              # GREEN, RED
-    complaint_against = db.Column(db.Boolean, default = "FALSE")
+    complaint_against = db.Column(db.String, default = "FALSE")
 
     # unique to service professional
     serviceID = db.Column(db.Integer, db.ForeignKey('service.serviceID'), nullable = True)
@@ -32,7 +32,7 @@ class User(db.Model,UserMixin):
     sp_avg_rating = db.Column(db.Float, default = 0.0)
 
     # to access service details
-    service = db.relationship("Service", backref = 'serv_profs')
+    services = db.relationship("Service", backref = 'serv_profs')
 
     # to access service requests
     #service_requests = db.relationship("Service_Request", backref = "customer", cascade = "all, delete-orphan")
@@ -72,16 +72,16 @@ class Service(db.Model):
     service_desc = db.Column(db.String)
 
 # Service Request created by the customer
-class Service_Request(db.Model):
+class Service__Request(db.Model):
     s_reqID = db.Column(db.Integer, primary_key = True)
     serviceID = db.Column(db.String, db.ForeignKey('service.serviceID'))
     customerID = db.Column(db.Integer, db.ForeignKey('user.id'))
     spID = db.Column(db.Integer, db.ForeignKey('user.id'))
-    service_status = db.Column(db.String, nullable = False, default = 'REQUESTED') # REQUESTED, ASSIGNED, CLOSED
+    service_status = db.Column(db.String, default = 'REQUESTED') # REQUESTED, ASSIGNED, CLOSED
     date_of_req = db.Column(db.String, nullable = False)
     date_of_completion = db.Column(db.String, default = "Yet to be completed...")
     remarks = db.Column(db.String)
-    rating = db.Column(db.Integer, nullable = False)
+    rating = db.Column(db.Integer)
 
     # relationships
     customer = db.relationship("User", foreign_keys = [customerID], backref = "serv_reqs")
@@ -89,6 +89,6 @@ class Service_Request(db.Model):
 
 class ServiceRequestStatus(db.Model):
     s_req_statusID = db.Column(db.Integer, primary_key = True)
-    s_reqID = db.Column(db.Integer, db.ForeignKey('service__request.s_reqID'))
+    s_reqID = db.Column(db.Integer, db.ForeignKey('service___request.s_reqID'))
     spID = db.Column(db.Integer, db.ForeignKey('user.id'))
     status = db.Column(db.String, nullable = False)
