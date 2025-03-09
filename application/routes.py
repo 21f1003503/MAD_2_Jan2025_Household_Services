@@ -1,5 +1,6 @@
 from .database import db
 from .models import User, Role
+from .utils import roles_list
 
 from flask import current_app as app, jsonify, request, render_template
 from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
@@ -35,7 +36,8 @@ def user_login():
                     "id": user.id,
                     "username": user.username,
                     "full_name": user.full_name,
-                    "auth-token": user.get_auth_token()
+                    "auth-token": user.get_auth_token(),
+                    "roles": roles_list(user.roles)
                     
             })
             
@@ -47,6 +49,17 @@ def user_login():
         return jsonify({
             "message": "User Not Found!!!"
         }), 404
+    
+@app.route('/api/home')
+@auth_required('token')
+@roles_accepted('admin', 'customer', 'service_professional')
+def user_home():
+    user = current_user
+    return jsonify({
+        "username": user.username,
+        "full_name": user.full_name,
+        "roles": roles_list(user.roles)
+    })
 
 @app.route('/api/admin')
 @auth_required('token')
@@ -112,13 +125,3 @@ def sp_registration():
     return jsonify({
         "message": "Service Professional Already Exists!!!"
     }), 400
-
-@app.route('/api/home')
-@auth_required('token')
-@roles_accepted('admin', 'customer', 'service_professional')
-def user_home():
-    user = current_user
-    return jsonify({
-        "username": user.username,
-        "full_name": user.full_name
-    })
