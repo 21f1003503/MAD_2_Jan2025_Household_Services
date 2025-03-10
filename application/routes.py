@@ -1,5 +1,5 @@
 from .database import db
-from .models import User, Role
+from .models import User, Role, Service__Request, Service, ServiceRequestStatus
 from .utils import roles_list
 
 from flask import current_app as app, jsonify, request, render_template
@@ -59,6 +59,23 @@ def user_home():
         "username": user.username,
         "full_name": user.full_name,
         "roles": roles_list(user.roles)
+    })
+
+@app.route('/api/cu_home')
+@auth_required('token')
+@roles_required('customer')
+def cu_home():
+    cus  = current_user
+    return jsonify({
+        "id": cus.id,
+        "username": cus.username,
+        "password": cus.password,
+        "full_name": cus.full_name,
+        "roles": roles_list(cus.roles),
+        "cu_address": cus.cu_address,
+        "pincode": cus.pincode,
+        "flag": cus.flag,
+        "complaint_against": cus.complaint_against
     })
 
 @app.route('/api/admin')
@@ -125,3 +142,10 @@ def sp_registration():
     return jsonify({
         "message": "Service Professional Already Exists!!!"
     }), 400
+
+# @app.route('/api/service_request/create/<string:service_category>')
+# @auth_required('token')
+# @roles_required('customer')
+# def create_service_by_category(service_category):
+#     cleaning_services = Service.query.filter_by(category = service_category)
+   

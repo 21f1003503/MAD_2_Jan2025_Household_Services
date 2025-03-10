@@ -84,6 +84,7 @@ class Service__Request(db.Model):
     rating = db.Column(db.Integer)
 
     # relationships
+    service = db.relationship("Service", foreign_keys = [serviceID], backref = "service_requests")
     customer = db.relationship("User", foreign_keys = [customerID], backref = "serv_reqs")
     service_professional = db.relationship("User", foreign_keys = [spID], backref = "serv_prof_requests")
 

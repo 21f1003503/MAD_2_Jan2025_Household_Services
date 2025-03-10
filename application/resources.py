@@ -56,7 +56,8 @@ class ServiceRequestApi(Resource):
                 "date_of_req": serv_req.date_of_req,
                 "date_of_completion": serv_req.date_of_completion,
                 "remarks": serv_req.remarks,
-                "rating": serv_req.rating
+                "rating": serv_req.rating,
+                "service_name": serv_req.service.service_name
             }
 
         service_requests = []
@@ -78,6 +79,8 @@ class ServiceRequestApi(Resource):
             this_serv_req["date_of_completion"] = service_req.date_of_completion
             this_serv_req["remarks"] = service_req.remarks
             this_serv_req["rating"] = service_req.rating
+            this_serv_req["service_name"] = service_req.service.service_name
+            this_serv_req["service_price"] = service_req.service.service_price
             service_requests_json.append(this_serv_req)
             
         if service_requests_json:
@@ -93,15 +96,11 @@ class ServiceRequestApi(Resource):
         args = s_req_parser.parse_args()
 
         try:
-            print(args)
-            s_req = Service__Request(serviceID = args["serviceID"],
+            #print(args)
+            s_req = Service__Request(   serviceID = args["serviceID"],
                                         customerID = current_user.id,
                                         date_of_req = args["date_of_req"],
-                                        spID = args["spID"],
-                                        service_status = args["service_status"],
-                                        date_of_completion = args["date_of_completion"],
-                                        remarks = args["remarks"],
-                                        rating = args["rating"]
+                                        
                                         )
             db.session.add(s_req)
             db.session.commit()
@@ -109,7 +108,8 @@ class ServiceRequestApi(Resource):
                 "message": "Service Request Created Successfully!!!"
             }
         except Exception as e:
-            print(e)
+            print('args:',args)
+            print('e:',e)
             return {
                 "message": "One or More Required Fields Are Missing!!!"
             }, 400
@@ -156,7 +156,7 @@ class ServiceAPI(Resource):
     
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
-    def get(self, serviceID = None):
+    def get(self, serviceID = None, category = None):
 
         if serviceID:
             ser = Service.query.get(serviceID)
@@ -174,6 +174,31 @@ class ServiceAPI(Resource):
                 "sub_category": ser.sub_category,
                 "service_desc": ser.service_desc
             }
+        
+        if category:
+            ser = []
+            ser_json = []
+
+            if "admin" in roles_list(current_user.roles) or "customer" in roles_list(current_user.roles):
+                ser = Service.query.filter_by(category = category)
+            elif "service_professional" in roles_list(current_user.roles):
+                ser = current_user.services
+
+            for s in ser:
+                this_service = {}
+                this_service["serviceID"] = s.serviceID
+                this_service["service_name"] = s.service_name
+                this_service["service_price"] = s.service_price
+                this_service["category"] = s.category
+                this_service["sub_category"] = s.sub_category
+                this_service["service_desc"] = s.service_desc
+                ser_json.append(this_service)
+
+            if ser_json:
+                return ser_json
+            return {
+                "message": "No Service Found!!!"
+            }, 404
 
         servs = []
         services_json = []
@@ -197,7 +222,7 @@ class ServiceAPI(Resource):
             return services_json
         return {
             "message": "No Service Found!!!"
-        }, 
+        }, 404
 
     @auth_required('token')
     @roles_required('admin')
@@ -271,6 +296,7 @@ api.add_resource(ServiceRequestApi, '/api/service_request/get',
 
 api.add_resource(ServiceAPI, '/api/service/get',
                              '/api/service/get/<int:serviceID>',
+                             '/api/service/get/<string:category>',
                              '/api/service/create',
                              '/api/service/update/<int:serviceID>',
                              '/api/service/delete/<int:serviceID>')
