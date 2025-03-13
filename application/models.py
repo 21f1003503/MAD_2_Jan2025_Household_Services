@@ -100,3 +100,12 @@ class ServiceRequestStatus(db.Model):
     serv_request = db.relationship("Service__Request", foreign_keys = [s_reqID], backref = "serv_request_status")
     serv_professional = db.relationship("User", backref = "request_status")
 
+class Complaints(db.Model):
+    complaintID = db.Column(db.Integer, primary_key = True)
+    complaint_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    complaint_against = db.Column(db.Integer, db.ForeignKey('user.id'))
+    complaint_desc = db.Column(db.String)
+    complaint_status = db.Column(db.String, default = "PENDING")
+
+    registered_comp = db.relationship('User', foreign_keys=[complaint_by] , backref = 'filed_complaints')
+    got_registered_against_comp = db.relationship('User', foreign_keys=[complaint_against], backref = 'received_complaints')
