@@ -474,6 +474,8 @@ class ServiceProfAPI(Resource):
 
         if "admin" in roles_list(current_user.roles) or "customer" in roles_list(current_user.roles):
             serv_prof  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional").all()
+        if "service_professional" in roles_list(current_user.roles):
+            serv_prof  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional", User.id == current_user.id).all()
 
         for sp in serv_prof:
             this_sp = {}
@@ -510,11 +512,34 @@ class ServiceRequestStatusAPI(Resource):
             serv_req_status = []
             serv_req_status_json = []
 
-            if "admin" in roles_list(current_user.roles):
+            if "admin" in roles_list(current_user.roles) or "service_professional" in roles_list(current_user.roles):
                 if s_reqID:
                     serv_req_status = ServiceRequestStatus.query.filter_by(s_reqID=s_reqID).all()
                 elif s_req_statusID:
                     serv_req_status = ServiceRequestStatus.query.filter_by(s_req_statusID=s_req_statusID).all()
+
+                for req in serv_req_status:
+                    this_req = {}
+                    this_req["s_req_statusID"] = req.s_req_statusID
+                    this_req["s_reqID"] = req.s_reqID
+                    this_req["spID"] = req.spID
+                    this_req["status"] = req.status
+                    this_req["service_name"] = req.serv_request.service.service_name
+                    this_req["category"] = req.serv_request.service.category
+                    this_req["sub_category"] = req.serv_request.service.sub_category
+                    this_req["service_price"] = req.serv_request.service.service_price
+                    
+                    serv_req_status_json.append(this_req)
+
+                if serv_req_status_json:
+                    return serv_req_status_json
+                else:
+                    return {
+                        "message": "No Service Requests Found!!!"
+                    }
+
+        serv_req_status = []
+        serv_req_status_json = []
 
         if "admin" in roles_list(current_user.roles):
             serv_req_status = ServiceRequestStatus.query.all()
@@ -523,10 +548,20 @@ class ServiceRequestStatusAPI(Resource):
 
         for req in serv_req_status:
             this_req = {}
-            this_req["s_req_statusID"] = serv_req_status.s_req_statusID
-            this_req["s_reqID"] = serv_req_status.s_reqID
-            this_req["spID"] = serv_req_status.spID
-            this_req["status"] = serv_req_status.status
+            this_req["s_req_statusID"] = req.s_req_statusID
+            this_req["s_reqID"] = req.s_reqID
+            this_req["spID"] = req.spID
+            this_req["status"] = req.status
+            this_req["service_name"] = req.serv_request.service.service_name
+            this_req["category"] = req.serv_request.service.category
+            this_req["sub_category"] = req.serv_request.service.sub_category
+            this_req["service_price"] = req.serv_request.service.service_price
+            this_req["customer"] = req.serv_request.customer.username
+            this_req["date_of_req"] = req.serv_request.date_of_req
+            this_req["cu_address"] = req.serv_request.customer.cu_address
+            this_req["cu_pincode"] = req.serv_request.customer.pincode
+            this_req["service_status"] = req.serv_request.service_status
+            this_req["customer_contact"] = req.serv_request.customer.phone_number
             serv_req_status_json.append(this_req)
 
         if serv_req_status_json:

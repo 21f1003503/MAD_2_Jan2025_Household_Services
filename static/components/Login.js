@@ -52,8 +52,11 @@ export default {
                     if(data.roles.includes('admin')){
                         this.$router.push('/admin_dashboard')
                     }
-                    else{
+                    else if(data.roles.includes('customer')){
                         this.$router.push('/cu_dashboard')
+                    }
+                    else{
+                        this.$router.push('/sp_dashboard')
                     }
                 }
                 else{

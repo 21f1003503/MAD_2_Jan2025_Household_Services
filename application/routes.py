@@ -78,6 +78,28 @@ def cu_home():
         "complaint_against": cus.complaint_against
     })
 
+@app.route('/api/sp_home')
+@auth_required('token')
+@roles_required('service_professional')
+def sp_home():
+    cus = current_user
+    return jsonify({
+        "id": cus.id,
+        "username": cus.username,
+        "password": cus.password,
+        "full_name": cus.full_name,
+        "roles": roles_list(cus.roles),
+        "pincode": cus.pincode,
+        "phone_number": cus.phone_number,
+        "flag": cus.flag,
+        "complaint_against": cus.complaint_against,
+        "serviceID": cus.serviceID,
+        "sp_experience": cus.sp_experience,
+        "sp_verified_status": cus.sp_verified_status,
+        "sp_avg_rating": cus.sp_avg_rating,
+        "sp_availability": cus.sp_availability
+    })
+
 @app.route('/api/admin_home')
 @auth_required('token')
 @roles_required('admin')
@@ -164,4 +186,66 @@ def change_sp_verified_status(id):
        return {
            "message": "Service Professional Verification Status Updated Successfully!!!"
        }
-       
+
+@auth_required('token')
+@roles_required('service_professional')
+@app.route('/api/serv_prof/accept_request/<int:s_req_statusID>', methods = ['POST'])
+def accept_request(s_req_statusID):
+    # body = request.get_json()
+    serv_req_status = ServiceRequestStatus.query.get(s_req_statusID)
+    serv_req_status.status = 'ACCEPTED'
+    s_reqID = serv_req_status.s_reqID
+    spID = current_user.id
+    serv_req = Service__Request.query.get(s_reqID)
+    serv_req.spID = spID
+    serv_req.service_status = 'ASSIGNED'
+
+    other_req_statuses = ServiceRequestStatus.query.filter(
+        ServiceRequestStatus.s_reqID == s_reqID,
+        ServiceRequestStatus.s_req_statusID != s_req_statusID 
+    ).all()
+
+    for s_status in other_req_statuses:
+        s_status.status = 'REJECTED'
+
+    db.session.commit()
+    return{
+        "message": "Service Accepted Successfully!!!"
+    }
+
+@auth_required('token')
+@roles_required('service_professional')
+@app.route('/api/serv_prof/reject_request/<int:s_req_statusID>', methods = ['POST'])
+def reject_request(s_req_statusID):
+    serv_req_status = ServiceRequestStatus.query.get(s_req_statusID)
+    serv_req_status.status = 'REJECTED'
+    db.session.commit()
+    return{
+        "message": "Service Request Rejected!!!"
+    }
+
+@auth_required('token')
+@roles_required('customer')
+@app.route('/api/customer/close_service_request/<int:s_reqID>', methods = ['POST'])
+def close_service_request(s_reqID):
+    body = request.get_json()
+    serv_req = Service__Request.query.get(s_reqID)
+    id = serv_req.spID
+    sp = User.query.get(id)
+    avg_rating = sp.sp_avg_rating
+
+    serv_req.date_of_completion = body['date_of_completion']
+    serv_req.remarks = body['remarks']
+    serv_req.rating = body['rating']
+
+    sp_service_completed = Service__Request.query.filter(Service__Request.spID == id, Service__Request.service_status == 'CLOSED').count()
+    if sp_service_completed == 0:
+        sp.sp_avg_rating = serv_req.rating
+    else:
+        sp.sp_avg_rating = (((avg_rating * sp_service_completed) + serv_req.rating)/(sp_service_completed + 1))
+
+    serv_req.service_status = 'CLOSED'
+    db.session.commit()
+    return{
+        "message": "Service Request Closed Successfully!!!"
+    }
