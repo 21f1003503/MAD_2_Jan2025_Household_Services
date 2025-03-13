@@ -32,7 +32,7 @@ class User(db.Model,UserMixin):
     sp_avg_rating = db.Column(db.Float, default = 0.0)
 
     # to access service details
-    services = db.relationship("Service", backref = 'serv_profs')
+    services_performed = db.relationship("Service", foreign_keys = [serviceID], backref = 'serv_profs')
 
     # to access service requests
     #service_requests = db.relationship("Service_Request", backref = "customer", cascade = "all, delete-orphan")
@@ -71,6 +71,8 @@ class Service(db.Model):
     sub_category = db.Column(db.String, nullable = False)
     service_desc = db.Column(db.String)
 
+    #serv_profs = db.relationship("User", backref = "services")
+
 # Service Request created by the customer
 class Service__Request(db.Model):
     s_reqID = db.Column(db.Integer, primary_key = True)
@@ -92,4 +94,9 @@ class ServiceRequestStatus(db.Model):
     s_req_statusID = db.Column(db.Integer, primary_key = True)
     s_reqID = db.Column(db.Integer, db.ForeignKey('service___request.s_reqID'))
     spID = db.Column(db.Integer, db.ForeignKey('user.id'))
-    status = db.Column(db.String, nullable = False)
+    status = db.Column(db.String, default = 'PENDING') # PENDING, ACCEPTED, REJECTED
+
+    # relationships
+    serv_request = db.relationship("Service__Request", foreign_keys = [s_reqID], backref = "serv_request_status")
+    serv_professional = db.relationship("User", backref = "request_status")
+

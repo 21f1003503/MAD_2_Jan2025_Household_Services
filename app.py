@@ -1,7 +1,7 @@
 from flask import Flask
 
 from application.database import db
-from application.models import User, Role
+from application.models import User, Role, Service__Request, Service, ServiceRequestStatus
 from application.config import LocalDevelopmentConfig
 from application.resources import api
 
@@ -62,7 +62,7 @@ with app.app_context():
                                            roles = ["service_professional"],
                                            pincode = 400001,
                                            phone_number = 9988776600,
-                                           sp_document = "/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/sources/service_professional_documents/pablo_sarabia.jpeg",
+                                           sp_document = "/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/static/pablo_sarabia.jpeg",
                                            sp_experience = 1,
                                            )
         

@@ -78,12 +78,16 @@ def cu_home():
         "complaint_against": cus.complaint_against
     })
 
-@app.route('/api/admin')
+@app.route('/api/admin_home')
 @auth_required('token')
 @roles_required('admin')
 def admin_home():
+    admin = current_user
     return jsonify({
-        "message": "Admin Logged In Successfully!!!"
+        "id": admin.id,
+        "full_name": admin.full_name,
+        "password": admin.password,
+        "roles": roles_list(admin.roles)
     })
 
 @app.route('/api/customer')
@@ -131,6 +135,7 @@ def sp_registration():
                                            roles = ["service_professional"],
                                            pincode = credentials["pincode"],
                                            phone_number = credentials["phone_number"],
+                                           serviceID = credentials["serviceID"],
                                            sp_experience = credentials["sp_experience"],
                                            )
 
@@ -143,9 +148,20 @@ def sp_registration():
         "message": "Service Professional Already Exists!!!"
     }), 400
 
-# @app.route('/api/service_request/create/<string:service_category>')
-# @auth_required('token')
-# @roles_required('customer')
-# def create_service_by_category(service_category):
-#     cleaning_services = Service.query.filter_by(category = service_category)
-   
+@auth_required('token')
+@roles_required('admin')
+@app.route('/api/admin/change_sp_verified_status/<int:id>', methods = ['POST'])
+def change_sp_verified_status(id):
+       body = request.get_json()
+       sp = User.query.get(id)
+       
+       if sp.sp_verified_status == 'UNVERIFIED':
+           sp.sp_verified_status = "VERIFIED"
+       elif sp.sp_verified_status == "VERIFIED":
+           sp.sp_verified_status = 'UNVERIFIED'
+        
+       db.session.commit()
+       return {
+           "message": "Service Professional Verification Status Updated Successfully!!!"
+       }
+       
