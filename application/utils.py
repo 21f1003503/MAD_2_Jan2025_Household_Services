@@ -5,3 +5,4 @@ def roles_list(roles):
     for role in roles:
         role_list.append(role.name)
     return role_list
+

@@ -1,7 +1,9 @@
-from flask_restful import Api, Resource, reqparse, request
+from flask_restful import Api, Resource, reqparse, request, current_app as app
 from .models import *
 from flask_security import auth_required, roles_required, roles_accepted, current_user
 from .utils import roles_list
+
+cache = app.cache
 
 api = Api()
 
@@ -216,6 +218,7 @@ class ServiceAPI(Resource):
     
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
+    @cache.memoize(timeout = 5)
     def get(self, serviceID = None, category = None):
 
         if serviceID:

@@ -15,6 +15,7 @@ import AdminSP from './components/AdminSP.js'
 import AdminSPAction from './components/AdminSPAction.js'
 import SP_Dashboard from './components/SP_Dashboard.js'
 import Customer_Close_SR from './components/Customer_Close_SR.js'
+import UpdateService from './components/UpdateService.js'
 
 const routes = [
     {path: '/',                                                           component: Home},
@@ -31,7 +32,8 @@ const routes = [
     {path: '/admin/service_professionals',                                component: AdminSP},
     {path: '/admin/sp_action/:id',             name: 'sp_action',         component: AdminSPAction},
     {path: '/sp_dashboard',                                               component: SP_Dashboard},
-    {path: '/customer/close_s_req/:s_reqID',   name: 'close_sr',          component: Customer_Close_SR}
+    {path: '/customer/close_s_req/:s_reqID',   name: 'close_sr',          component: Customer_Close_SR},
+    {path: '/admin/update_service/:serviceID', name: 'update_service',    component: UpdateService}
 ]
 
 const router = new VueRouter({

@@ -21,7 +21,7 @@ export default {
                                 <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="sr in userServReqs">
+                            <tbody v-for="sr in userServReqs" v-if="sr.service_status != 'CLOSED'">
                                 <tr>
                                     <th scope="row">{{ sr.s_req_statusID }}</th>
                                     <td>{{ sr.s_reqID }}</td>
@@ -66,7 +66,7 @@ export default {
                                 <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="sr in userServReqs">
+                            <tbody v-for="sr in userServReqs" >
                                 <tr>
                                     <th scope="row">{{ sr.s_req_statusID }}</th>
                                     <td>{{ sr.s_reqID }}</td>
@@ -115,8 +115,10 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-else>
-            <h2 class="text-center">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h2>
+        <div v-else class="text-center" style="height: 700px;">
+            <div class="text-center mx-auto" style="width: 700px; height: 300px;">
+            <h2 class="text-center mx-auto mt-5">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h2>
+            </div>
         </div>
     `,
     data() {

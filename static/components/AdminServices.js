@@ -2,7 +2,11 @@ export default {
     template: `
         <div class="row border">
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
-                <div class="border mx-auto mt-5">
+            <div class="text-center mt-3 ">
+                    <button @click="create_csv" class="btn btn-outline-primary">Download Service Data</button>
+                    </div>
+                <div class="border mx-auto mt-3">
+                    
                     <h2 class="text-center mt-2">EXISTING SERVICES</h2>
                     <!-- div v-for="service in allServices">
                         <p>{{ service.service_name }}</p>
@@ -16,8 +20,8 @@ export default {
                             <h4 class="card-title">{{ service.service_name }}</h4>
                             <p class="card-text">About: {{ service.service_desc }}</p>
                             <p class="card-text">Price: INR {{ service.service_price }}</p>
-                            <a href="#" class="btn btn-outline-primary">Edit</a>
-                            <a href="#" class="btn btn-outline-danger">Delete</a>
+                            <router-link class="btn btn-outline-primary btn-sm" :to="{name: 'update_service', params: {serviceID: service.serviceID}}">EDIT</router-link>
+                            <button @click="deleteService(service.serviceID)" class = "btn btn-outline-danger btn-sm">DELETE</button>
                         </div>
                     </div>
                 </div>
@@ -71,10 +75,23 @@ export default {
     }, 
     mounted() {
             this.loadUser()
-            this.loadServices()
-            
+            this.loadServices()      
     },
     methods: {
+        async create_csv(){
+            const res = await fetch('http://127.0.0.1:5000/create_csv')
+            const task_id = (await res.json()).task_id
+
+            const interval = setInterval(async() => { 
+                const res = await fetch(`http://127.0.0.1:5000/getCSV/${task_id}`)}, 100)
+
+            if(res.ok){
+                console.log('data is ready')
+                window.open(`http://127.0.0.1:5000/getCSV/${task_id}`)
+                clearInterval(interval)
+            }
+            
+        },
         loadUser(){
             fetch('/api/admin_home', {
                 method: 'GET',
@@ -117,5 +134,16 @@ export default {
                 this.loadServices()
             })
         },
+        deleteService(serviceID){
+            fetch(`/api/delete_service/${serviceID}`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                },
+            })
+            .then(response => response.json())
+            .then(data => setTimeout(() => {window.location.reload()}, 50))
+        }
     }
 }

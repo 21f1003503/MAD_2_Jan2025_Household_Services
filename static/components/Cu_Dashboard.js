@@ -71,29 +71,30 @@ export default {
                         
                         <div class="card-body">
                             <h5 class="card-title">#{{ s.s_reqID }} - {{ s.service_name}}
-                                    <span class="badge rounded-pill text-bg-danger">
+                                    <span v-if="s.service_status =='REQUESTED'" class="badge rounded-pill text-bg-danger">
                                         {{ s.service_status }}
                                     </span>
-                                
+                                    <span v-if="s.service_status =='ASSIGNED'" class="badge rounded-pill text-bg-warning">
+                                        {{ s.service_status }}
+                                    </span>
+                                    <span v-if="s.service_status =='CLOSED'" class="badge rounded-pill text-bg-success">
+                                        {{ s.service_status }}
+                                    </span>
                             </h5>
 
-                            <p class="card-text">Created on:   {{s.date_of_request}}</p>
-                            <p v-if="s.service_status == 'CLOSED'" class="card-text">Completed on: {{s.date_of_completion}}</p>
-                            <p class="card-text">Cost:         {{s.service_price}}</p>
-                            <p v-if="s.service_status == 'ASSIGNED'" class="card-text">Performed by: {{s.spID}}</p>
+                            <h6 class="card-text">Created on:   {{s.date_of_request}}</h6>
+                            <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Completed on: {{s.date_of_completion}}</h6>
+                            <h6 class="card-text">Cost: {{s.service_price}}</h6>
+                            <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">Performed by: {{s.spID}}</h6>
 
-                            <p v-if="s.service_status == 'ASSIGNED'" class="card-text">
-                                <!--button @click="closeServiceRequest(s.s_reqID)" class = "btn btn-success">CLOSE</button-->
-                                <!--button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closeSRModal">
-                                    CLOSE
-                                </button-->
+                            <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">
                                 <router-link class="btn btn-success btn-sm" :to="{name: 'close_sr', params: {s_reqID: s.s_reqID} }">CLOSE</router-link>
-                            </p>
+                            </h6>
 
-                            <p v-if="s.service_status == 'REQUESTED'" class="card-text">
+                            <h6 v-if="s.service_status == 'REQUESTED'" class="card-text">
                                 <button class = "btn btn-outline-primary">EDIT</button>
-                                <button class = "btn btn-outline-danger">DELETE</button>
-                            </p>
+                                <button @click="deleteSR(s.s_reqID)" class = "btn btn-outline-danger">DELETE</button>
+                            </h6>
                         </div>
                     </div>
                     <div v-else class="text-center mt-5">
@@ -477,6 +478,17 @@ export default {
                     "Authentication-Token": localStorage.getItem("auth_token")
                 },
                 body: JSON.stringify(this.closeSR)
+            })
+            .then(response => response.json())
+            .then(data => setTimeout(() => {window.location.reload()}, 50))
+        },
+        deleteSR(s_reqID){
+            fetch(`/api/delete_service_req/${s_reqID}`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                },
             })
             .then(response => response.json())
             .then(data => setTimeout(() => {window.location.reload()}, 50))

@@ -1,15 +1,58 @@
 from .database import db
-from .models import User, Role, Service__Request, Service, ServiceRequestStatus
+from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles
 from .utils import roles_list
+from .celery.tasks import add, create_csv
+from celery.result import AsyncResult
 
-from flask import current_app as app, jsonify, request, render_template
+from flask import current_app as app, jsonify, request, render_template, send_file
 from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from datetime import datetime
+
+cache = app.cache
 
 @app.route('/', methods = ['GET'])
 def home():
     #return "<h1>This is home page</h1>"
     return render_template('index.html')
+
+@app.get('/cache')
+@cache.cached(timeout = 5)
+def cache():
+    return {'time': str(datetime.now)}
+
+@app.get('/celery')
+def celery():
+    task = add.delay(10,20)
+    return { 'task_id': task.id}
+
+@app.get('/getCeleryData/<id>')
+def getCeleryData(id):
+    result = AsyncResult(id)
+
+    if result.ready():
+        return {'result': result.result}
+    else:
+        return{
+            "message": "Task is not ready!!!"
+        }, 405
+
+
+@app.get('/create_csv')
+def createCSV():
+    task = create_csv.delay()
+    return { 'task_id': task.id}
+
+@app.get('/getCSV/<id>')
+def getCSV(id):
+    result = AsyncResult(id)
+    if result.ready():
+        return send_file(f'/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/application/celery/user_downloaded_files/{result.result}')
+    else:
+        return{
+            "message": "Task is not ready!!!"
+        }, 405
 
 @app.route('/api/login', methods = ['POST'])
 def user_login():
@@ -192,13 +235,21 @@ def change_sp_verified_status(id):
 @app.route('/api/serv_prof/accept_request/<int:s_req_statusID>', methods = ['POST'])
 def accept_request(s_req_statusID):
     # body = request.get_json()
+    # changes in SRS Table
     serv_req_status = ServiceRequestStatus.query.get(s_req_statusID)
     serv_req_status.status = 'ACCEPTED'
     s_reqID = serv_req_status.s_reqID
+
     spID = current_user.id
+
+    # changes in Service_Request Table
     serv_req = Service__Request.query.get(s_reqID)
     serv_req.spID = spID
     serv_req.service_status = 'ASSIGNED'
+
+    # changes in User Table
+    serv_prof = User.query.filter_by(id = spID).first()
+    serv_prof.sp_availability = 'UNAVAILABLE'
 
     other_req_statuses = ServiceRequestStatus.query.filter(
         ServiceRequestStatus.s_reqID == s_reqID,
@@ -233,6 +284,7 @@ def close_service_request(s_reqID):
     id = serv_req.spID
     sp = User.query.get(id)
     avg_rating = sp.sp_avg_rating
+    sp.sp_availibility = 'AVAILABLE'
 
     serv_req.date_of_completion = body['date_of_completion']
     serv_req.remarks = body['remarks']
@@ -249,3 +301,76 @@ def close_service_request(s_reqID):
     return{
         "message": "Service Request Closed Successfully!!!"
     }
+
+@auth_required('token')
+@roles_required('customer')
+@app.route('/api/delete_service_req/<int:s_reqID>', methods = ['POST'])
+def delete_service_req(s_reqID):
+    serv_req = Service__Request.query.get(s_reqID)
+
+    if serv_req:
+        db.session.delete(serv_req)
+        db.session.commit()
+        return{
+            "message": "Service Request Deleted Successfully"
+        }
+    
+    return{
+        "message": "Service Request Not Found!!!"
+    }, 404
+
+@auth_required('token')
+@roles_required('admin')
+@app.route('/api/delete_service/<int:serviceID>', methods = ['POST'])
+def delete_service(serviceID):
+    service = Service.query.get(serviceID)
+
+    if service:
+        db.session.delete(service)
+        db.session.commit()
+        return{
+            "message": "Service Deleted Successfully"
+        }
+    
+    return{
+        "message": "Service Request Not Found!!!"
+    }, 404
+
+@auth_required('token')
+@roles_accepted('service_professional', 'admin', 'customer')
+@app.route('/api/check_service_status_for_new_sp/<int:spID>', methods = ['PUT'])
+def check_service_status_for_new_sp(spID):
+    sp = User.query.get(id = spID)
+    
+    if sp:
+        serviceID = sp.serviceID
+        s_req = Service__Request.query.filter_by(serviceID=serviceID).all()
+        #s_req = Service__Request.query.get(serviceID)
+
+        for sr in s_req:
+            s_id = sr.s_reqID
+            existing_status = ServiceRequestStatus.query.filter_by(s_reqID=s_id).first()
+            if not existing_status:
+                serv_profs = User.query.join(UsersRoles).join(Role).filter(
+                    Role.name == "service_professional", 
+                    User.serviceID == serviceID
+                ).all()
+                
+                for sp in serv_profs:
+                    s_r_status = ServiceRequestStatus(
+                        s_reqID=s_id,
+                        spID=sp.id
+                    )
+                    db.session.add(s_r_status)
+
+        # for sr in s_req:
+        #     s_id = sr.s_reqID
+        #     if not ServiceRequestStatus.query.get(s_id):
+        #         serv_profs = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional", User.serviceID == serviceID).all() 
+        #         for sp in serv_profs:
+        #             s_r_status = ServiceRequestStatus(
+        #                 s_reqID = s_id,
+        #                 spID = sp.id
+        #             )               
+        #             db.session.add(s_r_status)
+        db.session.commit()   
