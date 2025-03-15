@@ -593,12 +593,11 @@ class ServiceRequestStatusAPI(Resource):
             }
 
 class ComplaintAPI(Resource):
-    
+
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
     @cache.memoize(timeout = 15)
     def get(self, complaintID = None):
-
         if complaintID:
             comp = Complaints.query.get(complaintID)
 
