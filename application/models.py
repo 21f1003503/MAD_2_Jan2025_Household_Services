@@ -111,3 +111,17 @@ class ServiceRequestStatus(db.Model):
 #     registered_comp = db.relationship('User', foreign_keys=[complaint_by] , backref = 'filed_complaints')
 #     got_registered_against_comp = db.relationship('User', foreign_keys=[complaint_against], backref = 'received_complaints')
 #     service_request = db.relationship('Service__Request', foreign_keys=[s_reqID], backref='comp')
+
+class Complaints(db.Model):
+    complaintID = db.Column(db.Integer, primary_key=True)
+    s_reqID = db.Column(db.Integer, db.ForeignKey('service___request.s_reqID'))
+    complaint_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    complaint_on = db.Column(db.Integer, db.ForeignKey('user.id'))
+    complaint_desc = db.Column(db.String)
+    complaint_status = db.Column(db.String, default="PENDING")  # PENDING, RESOLVED
+    result = db.Column(db.String, default="IN PROGRESS")
+
+    # Relationships (following existing pattern)
+    filed_by = db.relationship('User', foreign_keys=[complaint_by],backref='filed_complaints')
+    filed_against = db.relationship('User', foreign_keys=[complaint_on],backref='received_complaints')
+    service_request = db.relationship('Service__Request',foreign_keys=[s_reqID], backref='complaints')

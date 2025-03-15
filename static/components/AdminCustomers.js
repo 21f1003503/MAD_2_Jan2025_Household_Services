@@ -2,7 +2,8 @@ export default {
     template: `
         <div class="row border">
             <div class="col" style="height: 750px;">
-                <h2 class="text-center mt-2">Customers</h2>
+                
+                <router-link to="/admin_dashboard"><h2 class="text-center mt-2">Customers</h2></router-link>
                 <div class="mt-2 mx-auto text-center" style="width: 1200px;">
                     <table class="table table-hover table-striped table-bordered table-warning">
                         <thead class="table-primary">
@@ -14,7 +15,7 @@ export default {
                             <th scope="col">Flag</th>
                             <th scope="col">Pincode</th>
                             <th scope="col">Phone Number</th>
-                            <th scope="col">Complaint Against</th>
+                            
                             <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -28,8 +29,15 @@ export default {
                                 <td>{{ customer.flag }}</td>
                                 <td>{{ customer.pincode }}</td>
                                 <td>{{ customer.phone_number }}</td>
-                                <td>{{ customer.complaint_against }}</td>
-                                <td>@mdo</td>
+                                
+                                <td>
+                                    <div v-if="customer.flag == 'GREEN'">
+                                        <button @click="flagUser(customer.id)" class="btn btn-danger btn-sm">FLAG</button>
+                                    </div>
+                                    <div v-if="customer.flag == 'RED'">
+                                        <button @click="flagUser(customer.id)" class="btn btn-success btn-sm">UNFLAG</button>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -59,6 +67,23 @@ export default {
                 //console.log(data)
                 this.all_customers = data
             })
+        },
+        flagUser(id){
+            fetch(`/api/flag_user/${id}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 50); 
+            })
         }
     },
+    
 }

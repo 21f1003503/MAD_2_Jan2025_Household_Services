@@ -2,7 +2,7 @@ export default {
     template: `
         <div class="row border">
             <div class="col" style="height: 750px;">
-                <div class="border mx-auto mt-5 text-center" style="height: 650px; width: 500px;">
+                <div class=" mx-auto mt-5 text-center" style="height: 650px; width: 500px;">
                     <div>
                         <h2 class="text-center">Customer Registration Page</h2>
                         <div>

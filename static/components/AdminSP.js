@@ -2,7 +2,7 @@ export default {
     template: `
         <div class="row border">
             <div class="col" style="height: 750px; overflow-x: scroll; overflow-y: scroll"">
-                <h2 class="text-center mt-2">Service Professionals</h2>
+                <router-link to="/admin_dashboard"><h2 class="text-center mt-2">Service Professionals</h2></router-link>
                 <div class="mt-2 mx-auto text-center" style="width: 1400px;">
                     <table class="table table-hover table-striped table-bordered table-warning">
                         <thead class="table-primary">

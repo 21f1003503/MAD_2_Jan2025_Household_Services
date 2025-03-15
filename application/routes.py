@@ -1,5 +1,5 @@
 from .database import db
-from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles
+from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles, Complaints
 from .utils import roles_list
 from .celery.tasks import add, create_csv
 from celery.result import AsyncResult
@@ -324,6 +324,11 @@ def delete_service_req(s_reqID):
 @app.route('/api/delete_service/<int:serviceID>', methods = ['POST'])
 def delete_service(serviceID):
     service = Service.query.get(serviceID)
+    serv_req = Service__Request.query.filter_by(serviceID=serviceID).all()
+    if serv_req:
+        return{
+            "message": "Cannot Delete Service With an active service request"
+        }
 
     if service:
         db.session.delete(service)
@@ -333,7 +338,7 @@ def delete_service(serviceID):
         }
     
     return{
-        "message": "Service Request Not Found!!!"
+        "message": "Service Not Found!!!"
     }, 404
 
 @auth_required('token')
@@ -416,3 +421,39 @@ def searching():
             "message": "No Matches Found!!!"
         }
 
+@auth_required('token')
+@roles_required('admin')
+@app.route('/api/resolve_complaint/<int:complaintID>/<string:flag>', methods = ['PUT'])
+def resolve_complaint(complaintID, flag):
+    comp = Complaints.query.get(complaintID)
+    id = comp.complaint_on
+
+    user = User.query.get(id)
+    user.flag = flag
+
+    if flag == 'GREEN':
+        comp.result = 'User NOT FLAGGED'
+    elif flag == 'RED':
+        comp.result = 'User FLAGGED RED'
+
+    comp.complaint_status = 'RESOLVED'
+    db.session.commit()
+    return{
+        "message": "Complaint Has Been Resolved!!!"
+    }
+
+@auth_required('token')
+@roles_required('admin')
+@app.put('/api/flag_user/<int:id>')
+def flag_user(id):
+    user = User.query.get(id)
+
+    if user.flag == 'GREEN':
+        user.flag = 'RED'
+    elif user.flag == 'RED':
+        user.flag = 'GREEN'
+    
+    db.session.commit()
+    return{
+        "message": "User Flag Changed Successfully!!!"
+    }

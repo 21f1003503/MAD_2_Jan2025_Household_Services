@@ -4,10 +4,10 @@ export default {
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
                 <div class="text-center mt-3 ">
                     <button @click="create_csv" class="btn btn-outline-primary">Download Service Data</button>
-                    </div>
+                </div>
                 <div class="border mx-auto mt-3">
                     
-                    <h2 class="text-center mt-2">EXISTING SERVICES</h2>
+                    <router-link to="/admin_dashboard"><h2 class="text-center mt-2">EXISTING SERVICES</h2></router-link>
                     <!-- div v-for="service in allServices">
                         <p>{{ service.service_name }}</p>
                     </div -->

@@ -71,6 +71,7 @@ with app.app_context():
                                            full_name = "Service Professional 01",
                                            roles = ["service_professional"],
                                            pincode = 400001,
+                                           serviceID = 1,
                                            phone_number = 9988776600,
                                            sp_document = "/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/static/pablo_sarabia.jpeg",
                                            sp_experience = 1,

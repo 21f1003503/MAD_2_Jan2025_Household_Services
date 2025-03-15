@@ -57,6 +57,15 @@ srs_parser = reqparse.RequestParser()
 srs_parser.add_argument('s_reqID')
 srs_parser.add_argument('spID')
 srs_parser.add_argument('status')
+
+# complaint table arguments
+complaint_parser = reqparse.RequestParser()
+complaint_parser.add_argument('s_reqID')
+complaint_parser.add_argument('complaint_by')
+complaint_parser.add_argument('complaint_on')
+complaint_parser.add_argument('complaint_desc')
+complaint_parser.add_argument('complaint_status')
+complaint_parser.add_argument('result')
   
 class ServiceRequestApi(Resource):
     @auth_required('token')
@@ -217,7 +226,6 @@ class LoginServiceAPI(Resource):
         }, 404
 
 class ServiceAPI(Resource):
-    
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
     @cache.memoize(timeout = 5)
@@ -355,8 +363,10 @@ class ServiceAPI(Resource):
         }
 
 class CustomerAPI(Resource):
+    
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
+    @cache.memoize(timeout = 15)
     def get(self):
         id = request.args.get('id', type=int)
         flag = request.args.get('flag', type=str)
@@ -419,8 +429,10 @@ class CustomerAPI(Resource):
             }, 404
 
 class ServiceProfAPI(Resource):
+    
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
+    @cache.memoize(timeout = 15)
     def get(self):
         # if id or sp_verified_status or sp_availability or flag or complaint_against:
         id = request.args.get('id', type=int)
@@ -509,8 +521,10 @@ class ServiceProfAPI(Resource):
         }, 404
 
 class ServiceRequestStatusAPI(Resource):
+    
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
+    @cache.memoize(timeout = 15)
     def get(self):
         s_reqID = request.args.get('s_reqID', type=int)
         s_req_statusID = request.args.get('s_reqID', type=int)
@@ -578,6 +592,82 @@ class ServiceRequestStatusAPI(Resource):
                 "message": "No Service Requests Found!!!"
             }
 
+class ComplaintAPI(Resource):
+    @auth_required('token')
+    @roles_accepted('admin', 'customer', 'service_professional')
+    @cache.memoize(timeout = 15)
+    def get(self, complaintID = None):
+
+        if complaintID:
+            comp = Complaints.query.get(complaintID)
+
+            if comp is None:
+                return{
+                    "message": "Complaint Not Found!!!"
+                }, 404
+            
+            return{
+                "complaintID": comp.complaintID,
+                "s_reqID": comp.s_reqID,
+                "complaint_by": comp.complaint_by,
+                "complaint_on": comp.complaint_on,
+                "complaint_desc": comp.complaint_desc,
+                "complaint_status": comp.complaint_status,
+                "result": comp.result
+            }
+        
+        comps = []
+        comps_json = []
+
+        if "admin" in roles_list(current_user.roles):
+            comps = Complaints.query.all()
+        else:
+            comps = current_user.filed_complaints
+
+        for c in comps:
+            this_comp = {
+                "complaintID": c.complaintID,
+                "complaint_by": c.complaint_by,
+                "complaint_on":c.complaint_on,
+                "complaint_desc": c.complaint_desc,
+                "complaint_status": c.complaint_status,
+                "s_reqID": c.s_reqID,
+                "result": c.result
+            }
+            comps_json.append(this_comp)
+        
+        if comps_json:
+            return comps_json
+
+        return {
+            "message": "No Complaints Found!!!"
+        }
+
+    @auth_required('token')
+    @roles_accepted('customer', 'service_professional')
+    def post(self, s_reqID):
+        args = complaint_parser.parse_args()
+
+        try:
+            complain = Complaints(
+                s_reqID = s_reqID,
+                complaint_by =  current_user.id,
+                complaint_on = args['complaint_on'],
+                complaint_desc = args['complaint_desc']
+            )
+
+            db.session.add(complain)
+            db.session.commit()
+            return{
+                "message": "Complaint Registered Successfully!!!"
+            }
+        
+        except Exception as e:
+            print(e)
+            return{
+                "message": "Complaint Could Not Be Registered"
+            }, 400
+
 api.add_resource(ServiceRequestApi, '/api/service_request/get',
                                     '/api/service_request/get/<int:s_reqID>',
                                     '/api/service_request/create', 
@@ -603,3 +693,7 @@ api.add_resource(ServiceProfAPI, '/api/serv_prof/get')
 api.add_resource(CustomerAPI, '/api/customer/get')
 
 api.add_resource(ServiceRequestStatusAPI, '/api/serv_req_status/get')
+
+api.add_resource(ComplaintAPI, '/api/complaints/get',
+                               '/api/complaints/get/<int:complaintID>',
+                               '/api/complaints/create/<int:s_reqID>')

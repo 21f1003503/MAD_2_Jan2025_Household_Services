@@ -1,6 +1,13 @@
 export default {
     template: `
         <div>
+            
+            <div v-if="userData.flag == 'RED'"  >
+                <div class="col border" style="height: 750px;">
+                <h4 class="text-center mt-5">You Have Been RED Flagged By The Admin...</h4>
+            </div>
+            </div>
+            <div v-if="userData.flag == 'GREEN'">
             <h2>Welcome, {{ userData.full_name }}!</h2>
             <div class="row border">
                 <div class="col-8 border" style="height: 700px; overflow-y: scroll">
@@ -86,6 +93,60 @@ export default {
                             <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Completed on: {{s.date_of_completion}}</h6>
                             <h6 class="card-text">Cost: ₹ {{s.service_price}}</h6>
                             <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Performed by: ID {{s.service_professional}}</h6>
+                            <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">Assigned by: ID {{s.service_professional}}</h6>
+                            <h6 v-if="s.service_status == 'CLOSED'" class="card-text">
+                                
+                                <!--div v-if="cu_complaints.some(comp => comp.s_reqID === s.s_reqID)">
+                                    <div v-for="comp in cu_complaints" :key="comp.complaintID">
+                                        <div v-if="comp.s_reqID === s.s_reqID">
+                                            <div v-if="comp.complaint_status === 'PENDING'">
+                                                <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
+                                            </div>
+                                            <div v-else-if="comp.complaint_status === 'RESOLVED'">
+                                                <button class="btn btn-primary btn-sm" disabled>{{ comp.result }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div-->
+
+                                <!--h6 v-if="s.service_status == 'CLOSED'" class="card-text">
+                                    <div v-for="comp in cu_complaints" v-if="comp.s_reqID == s.s_reqID">
+                                        <div v-if="comp.complaint_status == 'PENDING'">
+                                            <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
+                                        </div>
+                                        <div v-else-if="comp.complaint_status == 'RESOLVED">
+                                            <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
+                                        </div>
+                                    </div>
+
+
+                                <router-link class="btn btn-outline-warning btn-sm" :to="{name: 'reg_complaint', params: {s_reqID: s.s_reqID} }">REGISTER COMPLAIN</router-link>
+                            </h6-->
+
+                                
+                                <div v-if="s.service_status == 'CLOSED'">
+                                    <div v-for="comp in cu_complaints">
+                                        <div v-if="comp.s_reqID == s.s_reqID">
+                                            <!--div v-else-->
+                                            <div v-if="comp.complaint_status == 'PENDING'">
+                                                <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
+                                            </div>
+                                            <div v-if="comp.complaint_status == 'RESOLVED'">
+                                                <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <router-link 
+                                                class="btn btn-outline-warning btn-sm"
+                                                :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
+                                                REGISTER COMPLAINT
+                                            </router-link>
+                                        </div>    
+                                    </div>
+                                </div>
+
+                                
+                            </h6>
 
                             <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">
                                 <router-link class="btn btn-success btn-sm" :to="{name: 'close_sr', params: {s_reqID: s.s_reqID} }">CLOSE</router-link>
@@ -325,6 +386,7 @@ export default {
                     </div>
                 </div>
             </div>
+            </div>
         </div>`,
     data: function(){
         return {
@@ -344,13 +406,15 @@ export default {
                 "date_of_completion": "",
                 "remarks": "",
                 "rating": ""
-            }
+            },
+            cu_complaints: null
         }
     },
     mounted() {
 
         this.loadUser()
         this.loadServiceReq()
+        this.customerComplaints()
 
         fetch('/api/service/get/cleaning', {
             method: "GET",
@@ -492,6 +556,20 @@ export default {
             })
             .then(response => response.json())
             .then(data => setTimeout(() => {window.location.reload()}, 50))
+        },
+        customerComplaints(){
+            fetch('/api/complaints/get', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.cu_complaints = data
+            })
         }
     }
 }

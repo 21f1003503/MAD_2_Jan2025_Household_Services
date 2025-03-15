@@ -45,12 +45,12 @@ export default {
                             </tbody>
                         </table>
                     </div>
-                    <div v-else>
-                        <h3 class="text-center">You Are Already Assigned A Service, Complete It Before Accepting Another One...</h3>
+                    <div v-if="userData.sp_availability == 'UNAVAILABLE'">
+                        <h5 class="text-center">You Are Already Assigned A Service, Complete It Before Accepting Another One...</h5>
                     </div>
 
                     <h3 class = "text-center mt-2">Your Service Requests</h3>
-                    <div v-if="userData.sp_availability == 'AVAILABLE'">
+                    <div>
                         <table class="table table-hover table-striped table-bordered table-warning">
                             <thead class="table-primary">
                                 <tr>
@@ -66,7 +66,7 @@ export default {
                                 <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="sr in userServReqs" >
+                            <tbody v-for="sr in userServReqs" v-if="sr.status == 'ACCEPTED'">
                                 <tr>
                                     <th scope="row">{{ sr.s_req_statusID }}</th>
                                     <td>{{ sr.s_reqID }}</td>
@@ -112,7 +112,7 @@ export default {
         </div>
         <div v-else class="text-center" style="height: 700px;">
             <div class="text-center mx-auto" style="width: 700px; height: 300px;">
-            <h2 class="text-center mx-auto mt-5">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h2>
+            <h5 class="text-center mx-auto mt-5">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h5>
             </div>
         </div>
     `,

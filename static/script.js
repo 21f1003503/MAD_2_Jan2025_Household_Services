@@ -18,6 +18,9 @@ import Customer_Close_SR from './components/Customer_Close_SR.js'
 import UpdateService from './components/UpdateService.js'
 import Edit_SR from './components/Edit_SR.js'
 import SearchResults from './components/SearchResults.js'
+import RegisterComplaint from './components/RegisterComplaint.js'
+import AdminComplaints from './components/AdminComplaints.js'
+import AdminServReqs from './components/AdminServReqs.js'
 
 const routes = [
     {path: '/',                                                           component: Home},
@@ -37,9 +40,11 @@ const routes = [
     {path: '/customer/close_s_req/:s_reqID',   name: 'close_sr',          component: Customer_Close_SR},
     {path: '/admin/update_service/:serviceID', name: 'update_service',    component: UpdateService},
     {path: '/customer/edit_sr/:s_reqID',       name: 'edit_sr',           component: Edit_SR},
-    {path: '/search_results',                                             component: SearchResults}
+    {path: '/search_results',                                             component: SearchResults},
+    {path: '/register_complaint/:s_reqID',     name: 'reg_complaint',     component: RegisterComplaint},
+    {path: '/admin/complaints',                                           component: AdminComplaints},
+    {path: '/admin/service_requests',                                     component: AdminServReqs}
 ]
-
 const router = new VueRouter({
     routes
 })

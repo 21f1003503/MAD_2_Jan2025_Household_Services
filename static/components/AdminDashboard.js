@@ -50,7 +50,7 @@ export default {
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <table class="table table-hover table-warning table-striped table-bordered">
+                                <table class="table table-hover table-warning table-striped table-bordered text-center">
                                     <thead class="table-primary">
                                         <tr>
                                         <th scope="col">ID</th>
@@ -59,22 +59,20 @@ export default {
                                         <th scope="col">SP ID</th>
                                         <th scope="col">Service Status</th>
                                         <th scope="col">Date Of Request</th>
-                                        <th scope="col">Date Of Completion</th>
-                                        <th scope="col">Remarks</th>
-                                        <th scope="col">Rating</th>
+                                        
+                                        
                                         </tr>
                                     </thead>
-                                    <tbody v-for="sr in userServiceReqs" v-if="sr.service_status == 'ACCEPTED'">
+                                    <tbody v-for="sr in userServiceReqs" v-if="sr.service_status == 'ASSIGNED'">
                                         <tr>
                                             <th scope="row">{{ sr.s_reqid }}</th>
                                             <td>{{ sr.serviceID }}</td>
-                                            <td>{{ sr.customerID }}</td>
-                                            <td>{{ sr.spID }}</td>
+                                            <td>{{ sr.customer }}</td>
+                                            <td>{{ sr.service_professional }}</td>
                                             <td>{{ sr.service_status }}</td>
-                                            <td>{{ sr.date_of_req }}</td>
-                                            <td>{{ sr.date_of_completion }}</td>
-                                            <td>{{ sr.remarks }}</td>
-                                            <td>{{ sr.rating }}</td>
+                                            <td>{{ sr.date_of_request }}</td>
+                                            
+                                            
                                             
                                         </tr>
                                     </tbody>
@@ -90,7 +88,7 @@ export default {
                             </h2>
                             <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <table class="table table-hover table-warning table-striped table-bordered">
+                                <table class="table table-hover table-warning table-striped table-bordered text-center">
                                     <thead class="table-primary">
                                         <tr>
                                         <th scope="col">ID</th>

@@ -2,11 +2,11 @@ export default {
     template: `
         <div class="row border">
             <div class="col" style="height: 750px;">
-                <div class="border mx-auto mt-5" style="height: 400px; width: 300px;">
+                <div class=" mx-auto mt-5" style="height: 400px; width: 300px;">
                     <div>
                         <h2 class="text-center">Login Page</h2>
                         
-                        <div class="mx-2 mb-3">
+                        <div class="mx-2 mb-3 mt-5">
                             <label for="username" class="form-label">Email address:</label>
                             <input type="email" class="form-control" id="username" v-model="formData.username" placeholder="name@gmail.com">
                         </div>
