@@ -100,17 +100,12 @@ export default {
                     <div class="card-body">
                         <h5 class="card-title">{{ userData.full_name }}</h5>
                         <h6 class="card-tex mt-2">Username: {{ userData.username }}</h6>
-                        <h6 class="card-text">Address: {{ userData.cu_address }}</h6>
                         <h6 class="card-text">Pincode: {{ userData.pincode }}</h6>
                         <h6 class="card-text">Phone Number: +91 {{ userData.phone_number }}</h6>
                         <h6 class="card-text">Complaints Against: {{ userData.complaint_against }}</h6>
                         <h6 class="card-text">Flag: {{ userData.flag }}</h6>
                     </div>
-                    <div class="card-footer text-body-secondary">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCustomerModal">
-                            Edit
-                        </button>
-                    </div>
+                    
                 </div>
                 </div>
             </div>

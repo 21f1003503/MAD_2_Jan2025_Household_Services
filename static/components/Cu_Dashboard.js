@@ -70,7 +70,7 @@ export default {
                     <div v-for="s in userServiceReqs" class = "card mt-2" v-if="s.s_reqID">
                         
                         <div class="card-body">
-                            <h5 class="card-title">#{{ s.s_reqID }} - {{ s.service_name}}
+                            <h5 class="card-title">#{{ s.s_reqID }}  {{ s.service_name}}
                                     <span v-if="s.service_status =='REQUESTED'" class="badge rounded-pill text-bg-danger">
                                         {{ s.service_status }}
                                     </span>
@@ -84,16 +84,16 @@ export default {
 
                             <h6 class="card-text">Created on:   {{s.date_of_request}}</h6>
                             <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Completed on: {{s.date_of_completion}}</h6>
-                            <h6 class="card-text">Cost: {{s.service_price}}</h6>
-                            <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">Performed by: {{s.spID}}</h6>
+                            <h6 class="card-text">Cost: ₹ {{s.service_price}}</h6>
+                            <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Performed by: ID {{s.service_professional}}</h6>
 
                             <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">
                                 <router-link class="btn btn-success btn-sm" :to="{name: 'close_sr', params: {s_reqID: s.s_reqID} }">CLOSE</router-link>
                             </h6>
 
                             <h6 v-if="s.service_status == 'REQUESTED'" class="card-text">
-                                <button class = "btn btn-outline-primary">EDIT</button>
-                                <button @click="deleteSR(s.s_reqID)" class = "btn btn-outline-danger">DELETE</button>
+                                <!--router-link class="btn btn-outline-primary btn-sm" :to="{name: 'edit_sr', params: {s_reqID: s.s_reqID} }">EDIT</router-link-->
+                                <button @click="deleteSR(s.s_reqID)" class = "btn btn-outline-danger btn-sm">DELETE</button>
                             </h6>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_salon" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{ service.service_price }}
                                         </option>
                                     </select>
                                 </div>
@@ -182,7 +182,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_electrical" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{service.service_price}}
                                         </option>
                                     </select>
                                 </div>
@@ -214,7 +214,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_carpentry" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{service.service_price}}
                                         </option>
                                     </select>
                                 </div>
@@ -246,7 +246,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_plumbing" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{service.service_price}}
                                         </option>
                                     </select>
                                 </div>
@@ -278,7 +278,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_appliance_repair" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{service.service_price}}
                                         </option>
                                     </select>
                                 </div>
@@ -310,7 +310,7 @@ export default {
                                     <label for="serviceID" class="form-label">Service:</label>
                                     <select class="form-select" aria-label="Select A Service:" v-model="serviceReq.serviceID" id="serviceID" type=number>
                                         <option v-for="service in services_cleaning" :key="service.serviceID" :value="service.serviceID">
-                                            #{{ service.serviceID }} {{ service.service_name }}
+                                            #{{ service.serviceID }} {{ service.service_name }} - ₹{{service.service_price}}
                                         </option>
                                     </select>
                                 </div>

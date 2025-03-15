@@ -374,3 +374,45 @@ def check_service_status_for_new_sp(spID):
         #             )               
         #             db.session.add(s_r_status)
         db.session.commit()   
+
+@auth_required('token')
+@roles_accepted('admin', 'customer', 'service_professional')
+@app.post('/search')
+def searching():
+    body = request.get_json()
+    term = body['term']
+
+    all_results = []
+    service_results = []
+    user_results = []
+    all_results_json = []
+
+    service_results += Service.query.filter(Service.service_name.like(f'%{term}%')).all()
+    service_results += Service.query.filter(Service.category.like(f'%{term}%')).all()
+
+    user_results += User.query.filter(User.flag.like(f'%{term}%')).all()
+    user_results += User.query.filter(User.username.like(f'%{term}%')).all()
+
+    if len(service_results) > 0:
+        all_results += service_results
+
+    all_results = list(set(all_results))
+
+    for result in all_results:
+        this_res = {
+            "serviceID": result.serviceID,
+            "service_name": result.service_name,
+            "category": result.category,
+            "sub_category": result.sub_category,
+            "service_price": result.service_price,
+            "service_desc": result.service_desc
+        }
+        all_results_json.append(this_res)
+
+    if all_results_json:
+        return all_results_json
+    else:
+        return{
+            "message": "No Matches Found!!!"
+        }
+

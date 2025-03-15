@@ -9,7 +9,7 @@ export default {
                 <router-link class="btn btn-primary my-2" to="/admin/service_professionals">View All Service Professionals</router-link>
                 <router-link class="btn btn-primary my-2" to="/admin/complaints">View All Conflicts</router-link>
 
-                <div class="row border mx-auto mt-3" style=" height: 500px; width: 800px; overflow-y: scroll">
+                <div class="row border mx-auto mt-3" style=" height: 500px; width: 800px; overflow-y: scroll; overflow-x: scroll;">
                     <div class="accordion mt-3 mx-auto" id="accordionExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
@@ -156,26 +156,17 @@ export default {
         }
     },
     mounted() {
-        
-        if (!sessionStorage.getItem('reloaded')) {
-            sessionStorage.setItem('reloaded', 'true');
-            window.location.reload();
-        } else {
-            sessionStorage.removeItem('reloaded');
-        }
-        
-        
         this.loadUser()
         this.loadServices()
         this.unverifiedSP()
         this.loadServiceReq()
     },
     methods: {
-        re_load(){
-            setTimeout(() => {
-                window.location.reload(); 
-            }, 50)
-        },
+        // re_load(){
+        //     setTimeout(() => {
+        //         window.location.reload(); 
+        //     }, 50)
+        // },
         createServiceRequest(){
             fetch('/api/service_request/create', {
                 method: 'POST',

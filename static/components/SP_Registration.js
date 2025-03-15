@@ -72,6 +72,7 @@ export default {
         }
     },
     mounted(){
+        
         this.loadServices()
     },
     methods: {
@@ -95,6 +96,7 @@ export default {
                 alert(data.message)
                 this.$router.push('/login')
             })
+            
         },
         loadServices(){
             fetch('/api/login_services/get', {

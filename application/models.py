@@ -104,9 +104,9 @@ class ServiceRequestStatus(db.Model):
 #     complaintID = db.Column(db.Integer, primary_key = True)
 #     s_reqID = db.Column(db.Integer, db.ForeignKey('service___request.s_reqID'))
 #     complaint_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     complaint_against = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     complaint_on = db.Column(db.Integer, db.ForeignKey('user.id'))
 #     complaint_desc = db.Column(db.String)
-#     complaint_status = db.Column(db.String, default = "PENDING")
+#     complaint_status = db.Column(db.String, default = "PENDING") # PENDING, RESOLVED  
 
 #     registered_comp = db.relationship('User', foreign_keys=[complaint_by] , backref = 'filed_complaints')
 #     got_registered_against_comp = db.relationship('User', foreign_keys=[complaint_against], backref = 'received_complaints')

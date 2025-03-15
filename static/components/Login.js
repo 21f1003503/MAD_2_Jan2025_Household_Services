@@ -51,12 +51,21 @@ export default {
                     console.log(data)
                     if(data.roles.includes('admin')){
                         this.$router.push('/admin_dashboard')
+                        setTimeout(() => {
+                            window.location.reload(); 
+                        }, 100);
                     }
                     else if(data.roles.includes('customer')){
                         this.$router.push('/cu_dashboard')
+                        setTimeout(() => {
+                            window.location.reload(); 
+                        }, 100);
                     }
                     else{
                         this.$router.push('/sp_dashboard')
+                        setTimeout(() => {
+                            window.location.reload(); 
+                        }, 100);
                     }
                 }
                 else{

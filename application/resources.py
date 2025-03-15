@@ -154,7 +154,7 @@ class ServiceRequestApi(Resource):
             }, 400
         
     @auth_required('token')
-    @roles_required('customer')
+    @roles_required('customer','admin', 'service_professional')
     def put(self, s_reqID):
         args = s_req_parser.parse_args()
         serv_req = Service__Request.query.get(s_reqID)
@@ -165,6 +165,8 @@ class ServiceRequestApi(Resource):
             serv_req.service_status         = args['service_status']
         if args['date_of_completion'] is not None:
             serv_req.date_of_completion     = args['date_of_completion']
+        if args['date_of_req'] is not None:
+            serv_req.date_of_req            = args['date_of_req']
         if args['remarks'] is not None:
             serv_req.remarks                = args['remarks']
         if args['rating'] is not None:
@@ -377,6 +379,7 @@ class CustomerAPI(Resource):
                 this_cus["id"] = cus.id
                 this_cus["full_name"] = cus.full_name
                 this_cus["password"] = cus.password
+                this_cus["cu_address"] = cus.cu_address
                 this_cus["username"] = cus.username
                 this_cus["pincode"] = cus.pincode
                 this_cus["phone_number"] = cus.phone_number
@@ -402,6 +405,7 @@ class CustomerAPI(Resource):
             this_cus["full_name"] = cus.full_name
             this_cus["password"] = cus.password
             this_cus["username"] = cus.username
+            this_cus["cu_address"] = cus.cu_address
             this_cus["pincode"] = cus.pincode
             this_cus["phone_number"] = cus.phone_number
             this_cus["flag"] = cus.flag
