@@ -228,7 +228,7 @@ class LoginServiceAPI(Resource):
 class ServiceAPI(Resource):
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
-    @cache.memoize(timeout = 5)
+    #e.memoize(timeout = 5)
     def get(self, serviceID = None, category = None):
 
         if serviceID:
@@ -366,7 +366,7 @@ class CustomerAPI(Resource):
     
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
-    @cache.memoize(timeout = 15)
+   # @cache.memoize(timeout = 15)
     def get(self):
         id = request.args.get('id', type=int)
         flag = request.args.get('flag', type=str)
@@ -432,7 +432,7 @@ class ServiceProfAPI(Resource):
     
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
-    @cache.memoize(timeout = 15)
+
     def get(self):
         # if id or sp_verified_status or sp_availability or flag or complaint_against:
         id = request.args.get('id', type=int)
@@ -524,7 +524,7 @@ class ServiceRequestStatusAPI(Resource):
     
     @auth_required('token')
     @roles_accepted('admin', 'service_professional', 'customer')
-    @cache.memoize(timeout = 15)
+    #@cache.memoize(timeout = 10)
     def get(self):
         s_reqID = request.args.get('s_reqID', type=int)
         s_req_statusID = request.args.get('s_reqID', type=int)
@@ -596,7 +596,7 @@ class ComplaintAPI(Resource):
 
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
-    @cache.memoize(timeout = 15)
+    #@cache.memoize(timeout = 10)
     def get(self, complaintID = None):
         if complaintID:
             comp = Complaints.query.get(complaintID)

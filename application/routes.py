@@ -121,6 +121,7 @@ def cu_home():
         "complaint_against": cus.complaint_against
     })
 
+
 @app.route('/api/sp_home')
 @auth_required('token')
 @roles_required('service_professional')

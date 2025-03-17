@@ -28,7 +28,7 @@ def create_app():
 app = create_app()
 
 celery_app = celery_init_app(app)
-import application.celery.celery_schedule
+
 
 with app.app_context():
     db.create_all()
@@ -78,6 +78,7 @@ with app.app_context():
                                            )
         
     db.session.commit()
+import application.celery.celery_schedule
 
 from application.routes import *
 excel.init_excel(app)
