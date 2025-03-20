@@ -1,7 +1,9 @@
 from celery import shared_task
 from .models import *
+from .mail import send_email
 import csv
 import datetime
+from .utils import format_report
 
 # user triggered job
 @shared_task(ignore_results = False, name = 'download_csv_report')
@@ -24,6 +26,29 @@ def csv_report():
 @shared_task(ignore_results = False, name = 'monthly_report')
 def monthly_report():
     customers = User.query.join(UsersRoles).join(Role).filter(Role.name == "customer").all()
+    
+    for cus in customers[1:]:
+        customer_data = {}
+        customer_data['full_name'] = cus.full_name
+        customer_data['username'] = cus.username
+        cus_serv_reqs = []
+        for service_req in cus.serv_reqs:
+            this_serv_req = {}
+            this_serv_req["s_reqID"] = service_req.s_reqID
+            this_serv_req["service_professional"] = service_req.spID
+            this_serv_req["service_status"] = service_req.service_status
+            this_serv_req["date_of_request"] = service_req.date_of_req
+            this_serv_req["date_of_completion"] = service_req.date_of_completion
+            this_serv_req["remarks"] = service_req.remarks
+            this_serv_req["rating"] = service_req.rating
+            this_serv_req["service_name"] = service_req.service.service_name
+            this_serv_req["service_price"] = service_req.service.service_price
+            cus_serv_reqs.append(this_serv_req)
+        customer_data['cus_serv_reqs'] = cus_serv_reqs
+
+        message = format_report('templates/customer_activity_report.html', data=customer_data)
+        send_email(customer_data['username'], subject="Monthly Activity Report - FixItNow!", message=message)
+
     return "Monthly reports sent"
 
 # activity triggered task

@@ -1,4 +1,5 @@
 # this file is used to store all utility functions
+from jinja2 import Template
 
 def roles_list(roles):
     role_list = []
@@ -6,3 +7,7 @@ def roles_list(roles):
         role_list.append(role.name)
     return role_list
 
+def format_report(html_template, data):
+    with open(html_template) as file:
+        template = Template(file.read())
+        return template.render(data = data)

@@ -1,7 +1,7 @@
 from .database import db
 from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles, Complaints
 from .utils import roles_list
-from .tasks import csv_report
+from .tasks import csv_report, monthly_report
 from celery.result import AsyncResult
 
 from flask import current_app as app, jsonify, request, render_template, send_file, send_from_directory
@@ -471,3 +471,10 @@ def export_csv():
 def csv_result(id):
     res = AsyncResult(id)
     return send_from_directory('static', res.result)
+
+@app.route('/api/send_reports')
+def send_reports():
+    res = monthly_report.delay()
+    return{
+        "result": res.result
+    }
