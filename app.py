@@ -5,7 +5,7 @@ import flask_excel as excel
 from application.database import db
 from application.models import User, Role, Service__Request, Service, ServiceRequestStatus
 from application.config import LocalDevelopmentConfig
-from application.celery.celery_factory import celery_init_app
+from application.celery_init import celery_init_app
 
 from flask_security import Security, SQLAlchemyUserDatastore
 from werkzeug.security import generate_password_hash
@@ -26,8 +26,7 @@ def create_app():
     return app
 
 app = create_app()
-
-celery_app = celery_init_app(app)
+celery = celery_init_app(app) 
 
 
 with app.app_context():
@@ -78,7 +77,7 @@ with app.app_context():
                                            )
         
     db.session.commit()
-import application.celery.celery_schedule
+#import application.celery.celery_schedule
 
 from application.routes import *
 excel.init_excel(app)

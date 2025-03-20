@@ -8,6 +8,7 @@ export default {
                 <router-link class="btn btn-primary my-2" to="/admin/customers">View All Customers</router-link>
                 <router-link class="btn btn-primary my-2" to="/admin/service_professionals">View All Service Professionals</router-link>
                 <router-link class="btn btn-primary my-2" to="/admin/complaints">View All Conflicts</router-link>
+                <button @click="csvExport" class="btn btn-warning my-2">Download CSV</button>
 
                 <div class="row border mx-auto mt-3" style=" height: 500px; width: 800px; overflow-y: scroll; overflow-x: scroll;">
                     <div class="accordion mt-3 mx-auto" id="accordionExample">
@@ -232,6 +233,14 @@ export default {
             .then(data => {
                 console.log(data)
                 this.unverified_serv_profs = data
+            })
+        },
+        csvExport(){
+            fetch('/api/export')
+            .then(response => response.json())
+            
+            .then(data => {
+                window.location.href = `/api/csv_result/${data.id}`                
             })
         }
     }

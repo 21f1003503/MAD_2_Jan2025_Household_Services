@@ -1,10 +1,10 @@
 from .database import db
 from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles, Complaints
 from .utils import roles_list
-from .celery.tasks import add, create_csv
+from .tasks import csv_report
 from celery.result import AsyncResult
 
-from flask import current_app as app, jsonify, request, render_template, send_file
+from flask import current_app as app, jsonify, request, render_template, send_file, send_from_directory
 from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,42 +17,42 @@ def home():
     #return "<h1>This is home page</h1>"
     return render_template('index.html')
 
-@app.get('/cache')
-@cache.cached(timeout = 5)
-def cache():
-    return {'time': str(datetime.now)}
+# @app.get('/cache')
+# @cache.cached(timeout = 5)
+# def cache():
+#     return {'time': str(datetime.now)}
 
-@app.get('/celery')
-def celery():
-    task = add.delay(10,20)
-    return { 'task_id': task.id}
+# @app.get('/celery')
+# def celery():
+#     task = add.delay(10,20)
+#     return { 'task_id': task.id}
 
-@app.get('/getCeleryData/<id>')
-def getCeleryData(id):
-    result = AsyncResult(id)
+# @app.get('/getCeleryData/<id>')
+# def getCeleryData(id):
+#     result = AsyncResult(id)
 
-    if result.ready():
-        return {'result': result.result}
-    else:
-        return{
-            "message": "Task is not ready!!!"
-        }, 405
+#     if result.ready():
+#         return {'result': result.result}
+#     else:
+#         return{
+#             "message": "Task is not ready!!!"
+#         }, 405
 
 
-@app.get('/create_csv')
-def createCSV():
-    task = create_csv.delay()
-    return { 'task_id': task.id}
+# @app.get('/create_csv')
+# def createCSV():
+#     task = create_csv.delay()
+#     return { 'task_id': task.id}
 
-@app.get('/getCSV/<id>')
-def getCSV(id):
-    result = AsyncResult(id)
-    if result.ready():
-        return send_file(f'/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/application/celery/user_downloaded_files/{result.result}')
-    else:
-        return{
-            "message": "Task is not ready!!!"
-        }, 405
+# @app.get('/getCSV/<id>')
+# def getCSV(id):
+#     result = AsyncResult(id)
+#     if result.ready():
+#         return send_file(f'/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/application/celery/user_downloaded_files/{result.result}')
+#     else:
+#         return{
+#             "message": "Task is not ready!!!"
+#         }, 405
 
 @app.route('/api/login', methods = ['POST'])
 def user_login():
@@ -458,3 +458,16 @@ def flag_user(id):
     return{
         "message": "User Flag Changed Successfully!!!"
     }
+
+@app.route('/api/export')
+def export_csv():
+    result = csv_report.delay()     # returns an async object
+    return jsonify({
+        "result": result.result,
+        "id": result.id
+    })
+
+@app.route('/api/csv_result/<id>')
+def csv_result(id):
+    res = AsyncResult(id)
+    return send_from_directory('static', res.result)
