@@ -95,6 +95,26 @@ export default {
                             <h6 v-if="s.service_status == 'CLOSED'" class="card-text">Performed by: ID {{s.service_professional}}</h6>
                             <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">Assigned by: ID {{s.service_professional}}</h6>
                             <h6 v-if="s.service_status == 'CLOSED'" class="card-text">
+                                <div v-if="s.complaints && s.complaints.length > 0">
+                                    <div v-for="complaint in s.complaints" :key="complaint.complaintID">
+                                        <div v-if="complaint.complaint_status == 'PENDING'">
+                                            <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
+                                        </div>
+                                        <div v-else-if="complaint.complaint_status == 'RESOLVED'">
+                                            <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-else>
+                                    <router-link class="btn btn-outline-warning btn-sm" 
+                                        :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
+                                        REGISTER COMPLAINT
+                                    </router-link>
+                                </div>
+                            </h6>
+
+                            <!--h6 v-if="s.service_status == 'CLOSED'" class="card-text"-->
                                 
                                 <!--div v-if="cu_complaints.some(comp => comp.s_reqID === s.s_reqID)">
                                     <div v-for="comp in cu_complaints" :key="comp.complaintID">
@@ -146,7 +166,7 @@ export default {
                                 </div>
 
                                 
-                            </h6>
+                            <!--/h6-->
 
                             <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">
                                 <router-link class="btn btn-success btn-sm" :to="{name: 'close_sr', params: {s_reqID: s.s_reqID} }">CLOSE</router-link>

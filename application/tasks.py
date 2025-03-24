@@ -35,16 +35,16 @@ def monthly_report():
         for service_req in cus.serv_reqs:
             this_serv_req = {}
             this_serv_req["s_reqID"] = service_req.s_reqID
-            this_serv_req["service_professional"] = service_req.spID
+            this_serv_req["service_professional"] = service_req.service_professional.full_name if service_req.spID else "Yet To Be Assigned"
             this_serv_req["service_status"] = service_req.service_status
             this_serv_req["date_of_request"] = service_req.date_of_req
             this_serv_req["date_of_completion"] = service_req.date_of_completion
-            this_serv_req["remarks"] = service_req.remarks
-            this_serv_req["rating"] = service_req.rating
+            this_serv_req["remarks"] = service_req.remarks if service_req.remarks else "N/A"
+            this_serv_req["rating"] = service_req.rating if service_req.rating else "N/A"
             this_serv_req["service_name"] = service_req.service.service_name
             this_serv_req["service_price"] = service_req.service.service_price
             cus_serv_reqs.append(this_serv_req)
-        customer_data['cus_serv_reqs'] = cus_serv_reqs
+        customer_data['service_requests'] = cus_serv_reqs
 
         message = format_report('templates/customer_activity_report.html', data=customer_data)
         send_email(customer_data['username'], subject="Monthly Activity Report - FixItNow!", message=message)

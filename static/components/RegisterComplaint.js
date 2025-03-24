@@ -5,7 +5,7 @@ export default {
                 <div class="card mx-auto mt-5 text-center" style="height: 600px; width: 500px;">
                     <div class="text-center mx-auto">
                         <div class="card-title mt-3">
-                            <h4>Edit Service Request</h4>
+                            <h4>Register Complaint</h4>
                         </div>
                          <!--h4 class="text-center mb-1 mt-3">Register Complaint</h4-->
                         <!--div class="card-body">

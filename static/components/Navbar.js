@@ -4,6 +4,7 @@ export default {
         
             <div class="col-7 border fs-2">
                 FixItNow
+                <i class="bi bi-house-door"></i>
             </div>
             
             <div class="col-3 border">

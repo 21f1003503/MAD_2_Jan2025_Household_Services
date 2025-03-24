@@ -285,7 +285,7 @@ def close_service_request(s_reqID):
     id = serv_req.spID
     sp = User.query.get(id)
     avg_rating = sp.sp_avg_rating
-    sp.sp_availibility = 'AVAILABLE'
+    sp.sp_availability = 'AVAILABLE'
 
     serv_req.date_of_completion = body['date_of_completion']
     serv_req.remarks = body['remarks']

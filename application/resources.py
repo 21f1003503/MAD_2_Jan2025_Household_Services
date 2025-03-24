@@ -492,11 +492,11 @@ class ServiceProfAPI(Resource):
         print("all service profs")
 
         if "admin" in roles_list(current_user.roles) or "customer" in roles_list(current_user.roles):
-            serv_prof  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional").all()
-        if "service_professional" in roles_list(current_user.roles):
-            serv_prof  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional", User.id == current_user.id).all()
+            serv_prof_one  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional").all()
+        elif "service_professional" in roles_list(current_user.roles):
+            serv_prof_one  = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional", User.id == current_user.id).all()
 
-        for sp in serv_prof:
+        for sp in serv_prof_one:
             this_sp = {}
             this_sp["id"] = sp.id
             this_sp["full_name"] = sp.full_name

@@ -57,7 +57,8 @@ export default {
                         <textarea class="form-control" id="service_desc" v-model="newService.service_desc" placeholder="Enter Description" required></textarea>
                     </div>
 
-                    <button @click="createService" class="btn btn-primary">Create</button>
+                    <!--button @click="createService" class="btn btn-primary">Create</button-->
+                    <div class="text-center"><button @click="createService" class="btn btn-primary btn-lg"><i class="bi bi-plus-circle-fill"></i></button></div>
                 </div>
             </div>
         </div>
