@@ -1,7 +1,7 @@
 from .database import db
 from .models import User, Role, Service__Request, Service, ServiceRequestStatus, UsersRoles, Complaints
 from .utils import roles_list
-from .tasks import csv_report, monthly_report
+from .tasks import csv_report, monthly_report, service_req_update
 from celery.result import AsyncResult
 
 from flask import current_app as app, jsonify, request, render_template, send_file, send_from_directory
@@ -261,6 +261,7 @@ def accept_request(s_req_statusID):
         s_status.status = 'REJECTED'
 
     db.session.commit()
+    result = service_req_update.delay(serv_req.customer.username)
     return{
         "message": "Service Accepted Successfully!!!"
     }
@@ -299,6 +300,7 @@ def close_service_request(s_reqID):
 
     serv_req.service_status = 'CLOSED'
     db.session.commit()
+    result = service_req_update.delay(serv_req.customer.username)
     return{
         "message": "Service Request Closed Successfully!!!"
     }

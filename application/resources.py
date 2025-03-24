@@ -2,6 +2,7 @@ from flask_restful import Api, Resource, reqparse, request, current_app as app
 from .models import *
 from flask_security import auth_required, roles_required, roles_accepted, current_user
 from .utils import roles_list
+from .tasks import service_req_update
 
 cache = app.cache
 
@@ -140,9 +141,12 @@ class ServiceRequestApi(Resource):
             serv_profs = User.query.join(UsersRoles).join(Role).filter(Role.name == "service_professional", User.serviceID == args["serviceID"]).all() 
 
             db.session.commit()
+             
 
             latest_request = Service__Request.query.order_by(Service__Request.s_reqID.desc()).first()
             s_reqID = latest_request.s_reqID
+            username = latest_request.customer.username
+            result = service_req_update.delay(username)
 
             for sp in serv_profs:
                 s_r_status = ServiceRequestStatus(
@@ -150,7 +154,8 @@ class ServiceRequestApi(Resource):
                     spID = sp.id
                 )               
                 db.session.add(s_r_status)
-                db.session.commit()      
+                db.session.commit()
+                
 
             return {
                 "message": "Service Request Created Successfully!!!"

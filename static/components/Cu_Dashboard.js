@@ -106,12 +106,12 @@ export default {
                                     </div>
                                 </div>
 
-                                <div v-else>
+                                <!--div v-else>
                                     <router-link class="btn btn-outline-warning btn-sm" 
                                         :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
                                         REGISTER COMPLAINT
                                     </router-link>
-                                </div>
+                                </div-->
                             </h6>
 
                             <!--h6 v-if="s.service_status == 'CLOSED'" class="card-text"-->
@@ -155,13 +155,13 @@ export default {
                                                 <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
                                             </div>
                                         </div>
-                                        <div v-else>
+                                        <!--div v-else>
                                             <router-link 
                                                 class="btn btn-outline-warning btn-sm"
                                                 :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
                                                 REGISTER COMPLAINT
                                             </router-link>
-                                        </div>    
+                                        </div-->    
                                     </div>
                                 </div>
 

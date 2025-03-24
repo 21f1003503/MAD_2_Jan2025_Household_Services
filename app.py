@@ -6,7 +6,7 @@ from application.database import db
 from application.models import User, Role, Service__Request, Service, ServiceRequestStatus
 from application.config import LocalDevelopmentConfig
 from application.celery_init import celery_init_app
-from application.tasks import monthly_report
+from application.tasks import monthly_report, service_req_update
 
 from flask_security import Security, SQLAlchemyUserDatastore
 from werkzeug.security import generate_password_hash
@@ -88,7 +88,7 @@ excel.init_excel(app)
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        crontab(minute='*/2'),
+        crontab(minute='*/10'),
         monthly_report.s(),
     )
 

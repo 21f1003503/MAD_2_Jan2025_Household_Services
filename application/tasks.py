@@ -4,6 +4,7 @@ from .mail import send_email
 import csv
 import datetime
 from .utils import format_report
+import requests
 
 # user triggered job
 @shared_task(ignore_results = False, name = 'download_csv_report')
@@ -51,7 +52,9 @@ def monthly_report():
 
     return "Monthly reports sent"
 
-# activity triggered task
+# activity triggered task (Async)
 @shared_task(ignore_results = False, name = 'service_request_status_update')
-def service_req_update():
-    return "Service Request Status is updated snd sent to the user."
+def service_req_update(username):
+    text = f"Hi {username}, your Service Request's status has been updated. Kindly check at http://127.0.0.1:5000"
+    response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
+    return "Service Request Status is updated and the user is updated."
