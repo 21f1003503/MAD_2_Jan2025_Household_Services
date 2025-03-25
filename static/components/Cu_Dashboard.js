@@ -9,8 +9,8 @@ export default {
             </div>
             <div v-if="userData.flag == 'GREEN'">
             <h2>Welcome, {{ userData.full_name }}!</h2>
-            <div class="row border">
-                <div class="col-8 border" style="height: 700px; overflow-y: scroll">
+            <div class="row ">
+                <div class="col-8 " style="height: 730px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">CHOOSE YOUR SERVICE</h3>
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <div class="col">
@@ -72,7 +72,7 @@ export default {
                         </div>
                     </div>
                 </div>
-                <div class="col-4 border" style="height: 700px; overflow-y: scroll">
+                <div class="col-4 " style="height: 730px; overflow-y: scroll">
                     <h3 class="text-center mt-2">Your Service Requests</h3>
                     <div v-for="s in userServiceReqs" class = "card mt-2" v-if="s.s_reqID">
                         

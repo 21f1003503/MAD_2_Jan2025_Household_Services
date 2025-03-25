@@ -71,6 +71,7 @@ complaint_parser.add_argument('result')
 class ServiceRequestApi(Resource):
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
+    @cache.memoize(timeout = 45)
     def get(self, s_reqID = None):
 
         if s_reqID:
@@ -107,12 +108,12 @@ class ServiceRequestApi(Resource):
             this_serv_req["s_reqID"] = service_req.s_reqID
             this_serv_req["serviceID"] = service_req.serviceID
             this_serv_req["customer"] = service_req.customerID
-            this_serv_req["service_professional"] = service_req.spID
+            this_serv_req["service_professional"] = service_req.spID if service_req.spID else "Yet to be Allotted..."
             this_serv_req["service_status"] = service_req.service_status
             this_serv_req["date_of_request"] = service_req.date_of_req
             this_serv_req["date_of_completion"] = service_req.date_of_completion
-            this_serv_req["remarks"] = service_req.remarks
-            this_serv_req["rating"] = service_req.rating
+            this_serv_req["remarks"] = service_req.remarks if service_req.remarks else "N/A" 
+            this_serv_req["rating"] = service_req.rating if service_req.rating else "N/A"
             this_serv_req["service_name"] = service_req.service.service_name
             this_serv_req["service_price"] = service_req.service.service_price
             service_requests_json.append(this_serv_req)
@@ -146,7 +147,8 @@ class ServiceRequestApi(Resource):
             latest_request = Service__Request.query.order_by(Service__Request.s_reqID.desc()).first()
             s_reqID = latest_request.s_reqID
             username = latest_request.customer.username
-            result = service_req_update.delay(username)
+            s_name = latest_request.service.service_name
+            result = service_req_update.delay(username, s_name, latest_request.s_reqID,0)
 
             for sp in serv_profs:
                 s_r_status = ServiceRequestStatus(
@@ -233,7 +235,7 @@ class LoginServiceAPI(Resource):
 class ServiceAPI(Resource):
     @auth_required('token')
     @roles_accepted('admin', 'customer', 'service_professional')
-    #e.memoize(timeout = 5)
+    #@cache.cached(timeout = 90)
     def get(self, serviceID = None, category = None):
 
         if serviceID:

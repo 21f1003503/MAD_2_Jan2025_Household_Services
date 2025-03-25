@@ -54,7 +54,20 @@ def monthly_report():
 
 # activity triggered task (Async)
 @shared_task(ignore_results = False, name = 'service_request_status_update')
-def service_req_update(username):
-    text = f"Hi {username}, your Service Request's status has been updated. Kindly check at http://127.0.0.1:5000"
-    response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
-    return "Service Request Status is updated and the user is updated."
+def service_req_update(username, s_name, s_reqID, task_id):
+    if task_id == 1:
+        text = f"Hi {username}, your {s_name} Service Request's (Request ID: {s_reqID}) status has been updated. Kindly check at http://127.0.0.1:5000"
+        response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
+        return "Service Request is created and the user is notified."
+    elif task_id == 0:
+        text = f"Hi {username}!, you have created a new {s_name} Service Request (Request ID: {s_reqID}). Kindly visit http://127.0.0.1:5000 for more info." 
+        response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
+        return "Service Request Status is updated and the user is updated."
+    elif task_id == 2:
+        text = f"Hi {username}!, your {s_name} Service Request (Request ID: {s_reqID}) has been closed. Kindly visit http://127.0.0.1:5000 for more info. \n\nHope to see you soon!" 
+        response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
+        return "Service Request is closed and the user is notified."
+    elif task_id == 3:
+        text = f"Hi {username}!, your {s_name} Service Request (Request ID: {s_reqID}) has been deleted. Kindly visit http://127.0.0.1:5000 for more info." 
+        response = requests.post("https://chat.googleapis.com/v1/spaces/AAAAmJYHkbw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=02Y3pzsZ1UXKYB0cn9m9Sw-py2dAG8OhO-aB_r-FmDU", headers={'Content-Type': 'application/json'}, json = {"text": text})
+        return "Service Request is deleted and the user is notified."

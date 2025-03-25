@@ -1,11 +1,11 @@
 export default {
     template: `
-        <div class="row border">
-            <div class="col border mx-auto mt-5" style="height: 750px;">
+        <div class="row ">
+            <div class="col  mx-auto mt-4" style="height: 750px;">
                 <h2 class="text-center mb-3 mt-5">Close Service Request</h2>
-                <div class="card text-center" >
+                <div class="card text-center w-50 mx-auto" >
                     <div class="card-body text-center">
-                        <div class="mb-3">
+                        <div class="mb-3 text-center">
                             <label for="date_of_completion" class="form-label">Date of Completion:</label>
                             <input type="date" class="form-control" id="date_of_completion" v-model="closeSR.date_of_completion" :min="date_of_req" required>
                         </div>
@@ -29,7 +29,7 @@ export default {
                         </div>
 
                         <button @click="closeServiceRequest" class="btn btn-success btn-sm">CLOSE</button>
-                        <router-link class="btn btn-danger btn-sm" to="/customer_dashboard">Dont Close</router-link>
+                        <router-link class="btn btn-danger btn-sm" to="/cu_dashboard">Dont Close</router-link>
 
                         <div class="modal fade" id="complaintModal" tabindex="-1" aria-labelledby="complaintModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -79,6 +79,7 @@ export default {
     mounted() {
         this.loadUser()
         this.loadServiceReq()
+        this.loadServiceReqAgain()
     },
     data() {
         return {
@@ -116,6 +117,23 @@ export default {
                 this.userServiceReqs = data
             })
         },
+        loadServiceReqAgain(){
+            const s_reqID = this.$route.params.s_reqID
+            fetch(`/api/service_request/get/${s_reqID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.srData.complaint_by = data.customerID;
+                this.srData.complaint_on = data.spID;
+                this.srData.s_reqID = data.s_reqID
+            })
+        },
         closeServiceRequest(){
             const id = this.$route.params.s_reqID;
             fetch(`/api/customer/close_service_request/${id}`, {
@@ -142,23 +160,6 @@ export default {
             })
             .then(response => response.json())
             .then(data => this.userData = data)
-        },
-        loadServiceReq(){
-            const s_reqID = this.$route.params.s_reqID
-            fetch(`/api/service_request/get/${s_reqID}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authentication-Token": localStorage.getItem("auth_token")
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                this.srData.complaint_by = data.customerID;
-                this.srData.complaint_on = data.spID;
-                this.srData.s_reqID = data.s_reqID
-            })
         },
         registerComplaint(s_reqID){
             fetch(`/api/complaints/create/${s_reqID}` ,{

@@ -3,7 +3,7 @@ export default {
         <div class="row border">
             <div class="col border mx-auto mt-5" style="height: 750px;">
                 <router-link to="/admin_dashboard"><h2 class="text-center mb-3 mt-5">Service Professional</h2></router-link>
-                <div class="card text-center" :class="{'bg-warning text-black': serv_profs.sp_verified_status === 'VERIFIED', 'bg-danger text-black': serv_profs.sp_verified_status === 'UNVERIFIED'}" :style="{'--bs-bg-opacity': '0.4'}">
+                <div class="card text-center w-50 mx-auto" :class="{'bg-warning text-black': serv_profs.sp_verified_status === 'VERIFIED', 'bg-danger text-black': serv_profs.sp_verified_status === 'UNVERIFIED'}" :style="{'--bs-bg-opacity': '0.4'}">
                     <div class="card-header">
                         ID: {{ serv_profs.id }}
                     </div>

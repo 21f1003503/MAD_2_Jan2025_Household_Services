@@ -261,7 +261,7 @@ def accept_request(s_req_statusID):
         s_status.status = 'REJECTED'
 
     db.session.commit()
-    result = service_req_update.delay(serv_req.customer.username)
+    result = service_req_update.delay(serv_req.customer.username, serv_req.service.service_name, s_reqID, 1)
     return{
         "message": "Service Accepted Successfully!!!"
     }
@@ -300,7 +300,7 @@ def close_service_request(s_reqID):
 
     serv_req.service_status = 'CLOSED'
     db.session.commit()
-    result = service_req_update.delay(serv_req.customer.username)
+    result = service_req_update.delay(serv_req.customer.username, serv_req.service.service_name, s_reqID, 2)
     return{
         "message": "Service Request Closed Successfully!!!"
     }
@@ -312,8 +312,11 @@ def delete_service_req(s_reqID):
     serv_req = Service__Request.query.get(s_reqID)
 
     if serv_req:
+        cu_name = serv_req.customer.username
+        serv = serv_req.service.service_name
         db.session.delete(serv_req)
         db.session.commit()
+        result = service_req_update.delay(cu_name, serv, s_reqID, 3)
         return{
             "message": "Service Request Deleted Successfully"
         }

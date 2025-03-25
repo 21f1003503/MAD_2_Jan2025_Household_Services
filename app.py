@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_caching import Cache
-import flask_excel as excel
+# import flask_excel as excel
 
 from application.database import db
-from application.models import User, Role, Service__Request, Service, ServiceRequestStatus
+from application.models import User, Role
 from application.config import LocalDevelopmentConfig
 from application.celery_init import celery_init_app
-from application.tasks import monthly_report, service_req_update
+from application.tasks import monthly_report
 
 from flask_security import Security, SQLAlchemyUserDatastore
 from werkzeug.security import generate_password_hash
@@ -16,6 +16,8 @@ from celery.schedules import crontab
 def create_app():
     app = Flask(__name__)
     app.config.from_object(LocalDevelopmentConfig)
+    app.config['CACHE_TYPE'] = 'RedisCache'
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 300
     db.init_app(app)
     
     cache = Cache(app)
@@ -83,7 +85,7 @@ with app.app_context():
 #import application.celery.celery_schedule
 
 from application.routes import *
-excel.init_excel(app)
+# excel.init_excel(app)
 
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):

@@ -60,10 +60,11 @@ const app = new Vue({
     </div>
     `,
     data: {
-        section: "Frontend",
+        logInStatus: false,
     },
     components: {
         "nav-bar": Navbar,
         "foot": Footer
-    }
+    },
+    
 })
