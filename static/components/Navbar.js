@@ -1,13 +1,14 @@
 export default {
     template: `
-        <div class="row border">
+        <div class="row ">
         
-            <div class="col-7 border fs-2">
-                FixItNow
-                <i class="bi bi-house-door"></i>
+            <div class="col-7  fs-2">
+                <i class="bi bi-facebook"> FixItNow</i>
+                
+                <!--i class="bi bi-house-door"></i-->
             </div>
             
-            <div class="col-3 border">
+            <div class="col-3 ">
                 <form class = "d-flex">
                     <div class="col-auto mt-2">
                         <label for="search_bar" class="visually-hidden">Search</label>
@@ -21,7 +22,7 @@ export default {
                     </div>
                 </form>
             </div>
-            <div class="col-2 border">
+            <div class="col-2 ">
                 <div v-if="!loggedIn" class="mt-1 text-center">
                     <router-link class="btn btn-primary my-1" to="/login">Login</router-link>
                     <router-link class="btn btn-warning my-1" to="/registration">Register</router-link>
