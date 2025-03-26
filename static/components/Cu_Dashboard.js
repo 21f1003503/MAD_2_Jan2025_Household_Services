@@ -526,6 +526,13 @@ export default {
             })
             .then(response => response.json())
             .then(data => {
+                if (data.ok) {
+                    alert("Service request created successfully!");
+                } else {
+                    alert(data.message || "Failed to create service request. Please try again.");
+                }
+            })
+            .then(data => {
                 this.loadServiceReq()
             })
         },

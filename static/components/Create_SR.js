@@ -56,17 +56,15 @@ export default {
             })
             .then(response => response.json())
             .then(data => {
-                if (response.ok) {
+                if (data.ok) {
                     alert("Service request created successfully!");
                     this.$router.push('/cu_dashboard');
                 } else {
                     alert(data.message || "Failed to create service request. Please try again.");
+                    this.$router.push('/cu_dashboard');
                 }
             })
-            .catch(error => {
-                console.error("Error creating service request:", error);
-                alert("An error occurred. Please try again later.");
-            });
+            
         },
         loadUser(){
             fetch('/api/cu_home', {
