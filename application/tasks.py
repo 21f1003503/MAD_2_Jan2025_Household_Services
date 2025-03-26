@@ -15,9 +15,9 @@ def csv_report():
     with open(f'static/{csv_file_name}', 'w', newline="") as csvfile:
         sr_no = 1
         serv_req_csv = csv.writer(csvfile, delimiter=',')
-        serv_req_csv.writerow(['Sr No', 'Service Name', 'Customer Name', 'Service Professional Name', 'Date Of Request', 'Date Of Completion', 'Status', 'Remarks', 'Rating', 'Amount'])
+        serv_req_csv.writerow(['Sr No','Request ID', 'Service Name', 'Customer Name', 'Service Professional Name', 'Date Of Request', 'Date Of Completion', 'Status', 'Remarks', 'Rating', 'Amount'])
         for sr in service_reqs:
-            this_sr = [sr_no, sr.service.service_name, sr.customer.full_name, sr.service_professional.full_name, sr.date_of_req, sr.date_of_completion, sr.service_status, sr.remarks, sr.rating, sr.service.service_price]
+            this_sr = [sr_no, sr.s_reqID, sr.service.service_name, sr.customer.full_name, sr.service_professional.full_name if sr.service_professional else "Yet to be Allotted", sr.date_of_req, sr.date_of_completion, sr.service_status, sr.remarks if sr.remarks else "N/A", sr.rating if sr.rating else "N/A", sr.service.service_price]
             serv_req_csv.writerow(this_sr)
             sr_no += 1
 

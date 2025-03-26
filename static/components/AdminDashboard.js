@@ -10,7 +10,7 @@ export default {
                 <router-link class="btn btn-primary my-2" to="/admin/complaints">Conflicts</router-link>
                 <button @click="csvExport" class="btn btn-warning my-2">Download CSV</button>
 
-                <div class="row  mx-auto mt-3" style=" height: 500px; width: 800px; overflow-y: scroll; ">
+                <div class="row border mt-3" style=" height: 500px; width: 800px; overflow-y: scroll; ">
                     <div class="accordion mt-3 mx-auto" id="accordionExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
