@@ -133,7 +133,7 @@ class ServiceRequestApi(Resource):
         try:
             #print(args)
             serv = args['serviceID']
-            sp = User.query.filter_by(serviceID = serv)
+            sp = User.query.filter_by(serviceID = serv).all()
 
             if not sp:
                 return{
@@ -588,16 +588,16 @@ class ServiceRequestStatusAPI(Resource):
             this_req["s_reqID"] = req.s_reqID
             this_req["spID"] = req.spID
             this_req["status"] = req.status
-            this_req["service_name"] = req.serv_request.service.service_name
-            this_req["category"] = req.serv_request.service.category
-            this_req["sub_category"] = req.serv_request.service.sub_category
-            this_req["service_price"] = req.serv_request.service.service_price
-            this_req["customer"] = req.serv_request.customer.username
-            this_req["date_of_req"] = req.serv_request.date_of_req
-            this_req["cu_address"] = req.serv_request.customer.cu_address
-            this_req["cu_pincode"] = req.serv_request.customer.pincode
-            this_req["service_status"] = req.serv_request.service_status
-            this_req["customer_contact"] = req.serv_request.customer.phone_number
+            this_req["service_name"] = req.serv_request.service.service_name if req.s_reqID else "NA"
+            this_req["category"] = req.serv_request.service.category if req.s_reqID else "NA"
+            this_req["sub_category"] = req.serv_request.service.sub_category if req.s_reqID else "NA"
+            this_req["service_price"] = req.serv_request.service.service_price if req.s_reqID else "NA"
+            this_req["customer"] = req.serv_request.customer.username if req.s_reqID else "NA"
+            this_req["date_of_req"] = req.serv_request.date_of_req if req.s_reqID else "NA"
+            this_req["cu_address"] = req.serv_request.customer.cu_address if req.s_reqID else "NA"
+            this_req["cu_pincode"] = req.serv_request.customer.pincode if req.s_reqID else "NA"
+            this_req["service_status"] = req.serv_request.service_status if req.s_reqID else "NA"
+            this_req["customer_contact"] = req.serv_request.customer.phone_number if req.s_reqID else "NA"
             serv_req_status_json.append(this_req)
 
         if serv_req_status_json:

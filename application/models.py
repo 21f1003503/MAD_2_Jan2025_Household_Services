@@ -89,6 +89,7 @@ class Service__Request(db.Model):
     service = db.relationship("Service", foreign_keys = [serviceID], backref = "service_requests")
     customer = db.relationship("User", foreign_keys = [customerID], backref = "serv_reqs")
     service_professional = db.relationship("User", foreign_keys = [spID], backref = "serv_prof_requests")
+    serv_request_status = db.relationship("ServiceRequestStatus", backref = "serv_request", cascade = "all, delete-orphan")
 
 class ServiceRequestStatus(db.Model):
     s_req_statusID = db.Column(db.Integer, primary_key = True)
@@ -97,7 +98,7 @@ class ServiceRequestStatus(db.Model):
     status = db.Column(db.String, default = 'PENDING') # PENDING, ACCEPTED, REJECTED
 
     # relationships
-    serv_request = db.relationship("Service__Request", foreign_keys = [s_reqID], backref = "serv_request_status")
+    #serv_request = db.relationship("Service__Request", foreign_keys = [s_reqID], backref = "serv_request_status", cascade = "all, delete-orphan")
     serv_professional = db.relationship("User", backref = "request_status")
 
 class Complaints(db.Model):
