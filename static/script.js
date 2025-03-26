@@ -21,6 +21,7 @@ import SearchResults from './components/SearchResults.js'
 import RegisterComplaint from './components/RegisterComplaint.js'
 import AdminComplaints from './components/AdminComplaints.js'
 import AdminServReqs from './components/AdminServReqs.js'
+import Create_SR from './components/Create_SR.js'
 
 const routes = [
     {path: '/',                                                           component: Home},
@@ -43,7 +44,8 @@ const routes = [
     {path: '/search_results',                                             component: SearchResults},
     {path: '/register_complaint/:s_reqID',     name: 'reg_complaint',     component: RegisterComplaint},
     {path: '/admin/complaints',                                           component: AdminComplaints},
-    {path: '/admin/service_requests',                                     component: AdminServReqs}
+    {path: '/admin/service_requests',                                     component: AdminServReqs},
+    {path: '/create_serv_req',                 name: 'create_sr',         component: Create_SR}
 ]
 const router = new VueRouter({
     routes

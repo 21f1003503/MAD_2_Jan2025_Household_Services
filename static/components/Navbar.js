@@ -12,7 +12,7 @@ export default {
                 <form class = "d-flex">
                     <div class="col-auto mt-2">
                         <label for="search_bar" class="visually-hidden">Search</label>
-                        <input type="text" class="form-control" id="search_bar" v-model="search_query.term" placeholder="Find Services">
+                        <input type="text" class="form-control" id="search_bar" v-model="search_query.term" placeholder="Search">
                     </div>
                     <div class="col-auto mt-2 my-2">
                         <!--button @click="search" class="btn btn-primary ">Search</button-->
@@ -44,9 +44,27 @@ export default {
                             <div v-if="searchRes.length > 0">
                                 <ul class="list-group">
                                     <li class="list-group-item" v-for="res in searchRes" :key="res.serviceID">
-                                        <strong>{{ res.service_name }}</strong> - {{ res.category }}  
-                                        <span class="text-muted">₹{{ res.service_price }}</span><br>
-                                        <span class="text-muted">{{ res.service_desc }}</span>
+                                        <div v-if="res.service_desc != 'NA'">
+                                            <strong>{{ res.service_name }}</strong> - {{ res.category }}  
+                                            <span class="text-muted">₹{{ res.service_price }}</span><br>
+                                            <span class="text-muted">{{ res.service_desc }}</span>
+                                            <div v-if="userRoles.includes('customer')">
+                                                <div v-if="!userRoles.includes('admin')">
+                                                    <router-link class="btn btn-outline-primary my-2 btn-sm" :to="{name: 'create_sr'}">Create Service Request</router-link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-if="res.service_desc == 'NA'">
+                                            <strong>{{ res.username }}</strong><span class="text-muted"> {{ res.full_name }}</span><br>
+                                            
+                                            <span v-if="res.serviceID != 'NA'" class="text-muted">
+                                                Service Professional
+                                                <div v-if="userRoles.includes('admin')">
+                                                    <router-link class="btn btn-outline-primary my-2 btn-sm" :to="{name: 'sp_action', params: {id: res.userID} }">Take Action</router-link>
+                                                </div>
+                                            </span>
+                                            <span v-if="res.serviceID == 'NA'" class="text-muted">Customer</span>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -64,7 +82,7 @@ export default {
             </div>
         </div>
     `,
-    data() {
+    data: function(){
         return {
             loggedIn: localStorage.getItem("auth_token"),
             search_query: {
@@ -77,13 +95,12 @@ export default {
                 "sub_category": "",
                 "service_price": "",
                 "service_desc": ""
-            }
+            },
+            userRoles: {}
         }
     },
-    watch: {
-        loggedIn(new_value, old_value){
-            this.$router.go(0)
-        }
+    mounted() {
+        this.userRolesList()
     },
     methods: {
         log_out(){
@@ -108,6 +125,17 @@ export default {
                 console.log(data)
                 this.searchRes = data
             })
+        },
+        userRolesList(){
+            fetch('/api/home', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                }
+            })
+            .then(response => response.json())
+            .then(data => this.userRoles = data.roles)
         }
     }
 }

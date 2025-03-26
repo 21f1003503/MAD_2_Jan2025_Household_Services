@@ -4,7 +4,7 @@ from .utils import roles_list
 from .tasks import csv_report, monthly_report, service_req_update
 from celery.result import AsyncResult
 
-from flask import current_app as app, jsonify, request, render_template, send_file, send_from_directory
+from flask import current_app as app, jsonify, request, render_template, send_from_directory
 from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -16,43 +16,6 @@ cache = app.cache
 def home():
     #return "<h1>This is home page</h1>"
     return render_template('index.html')
-
-# @app.get('/cache')
-# @cache.cached(timeout = 5)
-# def cache():
-#     return {'time': str(datetime.now)}
-
-# @app.get('/celery')
-# def celery():
-#     task = add.delay(10,20)
-#     return { 'task_id': task.id}
-
-# @app.get('/getCeleryData/<id>')
-# def getCeleryData(id):
-#     result = AsyncResult(id)
-
-#     if result.ready():
-#         return {'result': result.result}
-#     else:
-#         return{
-#             "message": "Task is not ready!!!"
-#         }, 405
-
-
-# @app.get('/create_csv')
-# def createCSV():
-#     task = create_csv.delay()
-#     return { 'task_id': task.id}
-
-# @app.get('/getCSV/<id>')
-# def getCSV(id):
-#     result = AsyncResult(id)
-#     if result.ready():
-#         return send_file(f'/Users/sajalsaxena/Desktop/21F1003503_MAD_2_Jan_25/application/celery/user_downloaded_files/{result.result}')
-#     else:
-#         return{
-#             "message": "Task is not ready!!!"
-#         }, 405
 
 @app.route('/api/login', methods = ['POST'])
 def user_login():
@@ -120,7 +83,6 @@ def cu_home():
         "flag": cus.flag,
         "complaint_against": cus.complaint_against
     })
-
 
 @app.route('/api/sp_home')
 @auth_required('token')
@@ -393,39 +355,53 @@ def searching():
     body = request.get_json()
     term = body['term']
 
-    all_results = []
-    service_results = []
-    user_results = []
+    all_results = set()
     all_results_json = []
 
-    service_results += Service.query.filter(Service.service_name.like(f'%{term}%')).all()
-    service_results += Service.query.filter(Service.category.like(f'%{term}%')).all()
+    # Service-related queries
+    service_results = Service.query.filter((Service.service_name.like(f'%{term}%')) | (Service.category.like(f'%{term}%')) | (Service.sub_category.like(f'%{term}%')) | (Service.service_price.like(f'%{term}%'))).all()
 
-    user_results += User.query.filter(User.flag.like(f'%{term}%')).all()
-    user_results += User.query.filter(User.username.like(f'%{term}%')).all()
+    # User-related queries
+    user_results = User.query.filter((User.flag.like(f'%{term}%')) | (User.username.like(f'%{term}%')) | (User.sp_availability.like(f'%{term}%')) | (User.sp_verified_status.like(f'%{term}%'))).all()
 
-    if len(service_results) > 0:
-        all_results += service_results
+    # User queries based on related services
+    user_service_results = User.query.join(Service, User.serviceID == Service.serviceID).filter((Service.service_name.like(f'%{term}%')) |(Service.category.like(f'%{term}%')) |(Service.sub_category.like(f'%{term}%')) |(Service.service_price.like(f'%{term}%'))).all()
 
-    all_results = list(set(all_results))
+    all_results.update(service_results)
+    all_results.update(user_results)
+    all_results.update(user_service_results)
 
     for result in all_results:
-        this_res = {
-            "serviceID": result.serviceID,
-            "service_name": result.service_name,
-            "category": result.category,
-            "sub_category": result.sub_category,
-            "service_price": result.service_price,
-            "service_desc": result.service_desc
-        }
+        if isinstance(result, Service):
+            this_res = {
+                "serviceID": result.serviceID,
+                "service_name": result.service_name,
+                "category": result.category,
+                "sub_category": result.sub_category,
+                "service_price": result.service_price,
+                "service_desc": result.service_desc if result.service_desc else "NA",
+                "username": "NA",
+                "full_name": 'NA',
+                "userID": "NA"
+            }
+        elif isinstance(result, User):
+            this_res = {
+                "serviceID": result.serviceID if result.serviceID else "NA",
+                "service_name": "NA",  
+                "category": "NA",
+                "sub_category": "NA",
+                "service_price": "NA",
+                "service_desc": "NA",
+                "username": result.username,
+                "full_name": result.full_name,
+                "userID": result.id
+            }
         all_results_json.append(this_res)
 
     if all_results_json:
         return all_results_json
     else:
-        return{
-            "message": "No Matches Found!!!"
-        }
+        return {"message": "No Matches Found!!!"}
 
 @auth_required('token')
 @roles_required('admin')

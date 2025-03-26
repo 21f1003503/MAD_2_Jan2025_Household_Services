@@ -132,6 +132,14 @@ class ServiceRequestApi(Resource):
 
         try:
             #print(args)
+            serv = args['serviceID']
+            sp = User.query.filter_by(serviceID = serv)
+
+            if not sp:
+                return{
+                    "message": "No Existing Service Professional For This Service, Kindly Try Later."
+                }, 400
+
             s_req = Service__Request(   serviceID = args["serviceID"],
                                         customerID = current_user.id,
                                         date_of_req = args["date_of_req"],

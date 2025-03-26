@@ -1,7 +1,7 @@
 export default {
     template: `
         <div class="row border">
-            <div class="col-8 border" style="height: 750px; overflow-y: scroll">
+            <div class="col-8 border" style="height: 770px; overflow-y: scroll">
                 <div class="text-center mt-3 ">
                     <button @click="create_csv" class="btn btn-outline-primary">Download Service Data</button>
                 </div>
@@ -28,7 +28,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="col-4 border" style="height: 750px; overflow-y: scroll">
+            <div class="col-4 border" style="height: 770px; overflow-y: scroll">
                 <h3 class="text-center mt-2">CREATE SERVICE</h3>
                 <div class="mb-3">
                     <label for="category" class="form-label">Category:</label><br>
