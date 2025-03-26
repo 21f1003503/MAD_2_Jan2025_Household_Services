@@ -24,7 +24,7 @@ export default {
 
                     <div class="mb-3 mt-2">
                         <label for="service_desc" class="form-label">Original Description:</label><br>
-                        <textarea class="form-control" id="service_desc" v-model="serviceData.service_desc"></textarea><br>
+                        <textarea class="form-control" id="service_desc" v-model="serviceData.service_desc" readonly></textarea><br>
                         <label for="service_desc" class="form-label">New Description:</label><br>
                         <textarea class="form-control" id="service_desc" v-model="serviceChanges.service_desc" placeholder="Enter New Description If You Wish To Edit This Field..."></textarea>
                     </div>
@@ -39,7 +39,7 @@ export default {
         return {
             serviceData: {},
             serviceChanges: {
-                "service_price": null,
+                "service_price": "",
                 "service_desc": ""
             }
         }
@@ -61,6 +61,8 @@ export default {
             .then(data => {
                 console.log(data)
                 this.serviceData = data
+                this.serviceChanges.service_desc = data.service_desc
+                this.serviceChanges.service_price = data.service_price
             })
         },
         updateService(){
@@ -75,6 +77,7 @@ export default {
             })
             .then(response => response.json())
             .then(this.$router.push('/admin/services'))
+            .then(data => setTimeout(() => {window.location.reload()}, 50))
         }
     }
 }

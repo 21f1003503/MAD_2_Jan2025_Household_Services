@@ -8,9 +8,6 @@ export default {
                 <div class="border mx-auto mt-3">
                     
                     <router-link to="/admin_dashboard"><h2 class="text-center mt-2">EXISTING SERVICES</h2></router-link>
-                    <!-- div v-for="service in allServices">
-                        <p>{{ service.service_name }}</p>
-                    </div -->
 
                     <div v-for="service in allServices" v-if="service.serviceID" class="card mt-2">
                         <div class="card-header">
@@ -117,7 +114,7 @@ export default {
             .then(response => response.json())
             .then(data => {
                 console.log(data)
-                this.allServices = data
+                this.allServices = data.sort((a, b) => b.serviceID - a.serviceID)
             })
         },
         createService(){

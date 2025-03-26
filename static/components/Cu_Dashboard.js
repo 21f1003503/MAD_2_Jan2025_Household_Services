@@ -105,44 +105,7 @@ export default {
                                         </div>
                                     </div>
                                 </div>
-
-                                <!--div v-else>
-                                    <router-link class="btn btn-outline-warning btn-sm" 
-                                        :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
-                                        REGISTER COMPLAINT
-                                    </router-link>
-                                </div-->
                             </h6>
-
-                            <!--h6 v-if="s.service_status == 'CLOSED'" class="card-text"-->
-                                
-                                <!--div v-if="cu_complaints.some(comp => comp.s_reqID === s.s_reqID)">
-                                    <div v-for="comp in cu_complaints" :key="comp.complaintID">
-                                        <div v-if="comp.s_reqID === s.s_reqID">
-                                            <div v-if="comp.complaint_status === 'PENDING'">
-                                                <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
-                                            </div>
-                                            <div v-else-if="comp.complaint_status === 'RESOLVED'">
-                                                <button class="btn btn-primary btn-sm" disabled>{{ comp.result }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div-->
-
-                                <!--h6 v-if="s.service_status == 'CLOSED'" class="card-text">
-                                    <div v-for="comp in cu_complaints" v-if="comp.s_reqID == s.s_reqID">
-                                        <div v-if="comp.complaint_status == 'PENDING'">
-                                            <button class="btn btn-secondary btn-sm" disabled>COMPLAINT PENDING</button>
-                                        </div>
-                                        <div v-else-if="comp.complaint_status == 'RESOLVED">
-                                            <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
-                                        </div>
-                                    </div>
-
-
-                                <router-link class="btn btn-outline-warning btn-sm" :to="{name: 'reg_complaint', params: {s_reqID: s.s_reqID} }">REGISTER COMPLAIN</router-link>
-                            </h6-->
-
                                 
                                 <div v-if="s.service_status == 'CLOSED'">
                                     <div v-for="comp in cu_complaints">
@@ -155,25 +118,16 @@ export default {
                                                 <button class="btn btn-primary btn-sm" disabled>COMPLAINT RESOLVED</button>
                                             </div>
                                         </div>
-                                        <!--div v-else>
-                                            <router-link 
-                                                class="btn btn-outline-warning btn-sm"
-                                                :to="{ name: 'reg_complaint', params: { s_reqID: s.s_reqID } }">
-                                                REGISTER COMPLAINT
-                                            </router-link>
-                                        </div-->    
+                                            
                                     </div>
                                 </div>
-
-                                
-                            <!--/h6-->
 
                             <h6 v-if="s.service_status == 'ASSIGNED'" class="card-text">
                                 <router-link class="btn btn-success btn-sm" :to="{name: 'close_sr', params: {s_reqID: s.s_reqID} }">CLOSE</router-link>
                             </h6>
 
                             <h6 v-if="s.service_status == 'REQUESTED'" class="card-text">
-                                <!--router-link class="btn btn-outline-primary btn-sm" :to="{name: 'edit_sr', params: {s_reqID: s.s_reqID} }">EDIT</router-link-->
+                                
                                 <button @click="deleteSR(s.s_reqID)" class = "btn btn-outline-danger btn-sm">DELETE</button>
                             </h6>
                         </div>
@@ -557,8 +511,13 @@ export default {
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
-                this.userServiceReqs = data
+                console.log(data);
+                const statusPriority = {
+                    "ASSIGNED": 1,   
+                    "REQUESTED": 2,  
+                    "CLOSED": 3  
+                };
+                this.userServiceReqs = data.sort((a, b) => statusPriority[a.service_status] - statusPriority[b.service_status]);
             })
         },
         closeServiceRequest(s_reqID){

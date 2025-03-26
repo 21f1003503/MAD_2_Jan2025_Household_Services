@@ -3,7 +3,7 @@ export default {
         <div v-if="userData.sp_verified_status == 'VERIFIED' && userData.flag == 'GREEN'">
             <h2 class="mt-2 mb-2">Welcome, {{ userData.full_name }}!</h2>
             <div class="row border">
-                <div class="col-8" style="height: 750px; overflow-y: scroll">
+                <div class="col-8" style="height: 700px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">Available Service Requests</h3>
                     <div v-if="userData.sp_availability == 'AVAILABLE'">
                         <table class="table table-hover table-striped table-bordered table-warning">
@@ -46,7 +46,7 @@ export default {
                         </table>
                     </div>
                     <div v-if="userData.sp_availability == 'UNAVAILABLE'">
-                        <h5 class="text-center">You Are Already Assigned A Service, Complete It Before Accepting Another One...</h5>
+                        <strong><p class="text-center mt-5 mb-5">You Are Already Assigned A Service, Complete It Before Accepting Another One...</p></strong>
                     </div>
 
                     <h3 class = "text-center mt-2">Your Service Requests</h3>
@@ -62,7 +62,7 @@ export default {
                                 <th scope="col">Address</th>
                                 <th scope="col">Customer Phone No.</th>
                                 <th scope="col">Service Status</th>
-                                <th scope="col">Request Status</th>
+                                
                                 <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -76,7 +76,7 @@ export default {
                                     <td>{{ sr.cu_address }}</td>
                                     <td>{{ sr.customer_contact }}</td>
                                     <td>{{ sr.service_status }}</td>
-                                    <td>{{ sr.status }}</td>
+                                    
                                     <td>
                                     <div v-if="sr.status == 'PENDING'">
                                         <button @click="acceptService(sr.s_req_statusID)" class="btn btn-success btn-sm">ACCEPT</button>
@@ -91,7 +91,7 @@ export default {
                         </table>
                     </div>
                 </div>
-                <div class="col-4" style="height: 750px; overflow-y: scroll">
+                <div class="col-4" style="height: 700px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">Your Profile</h3>
                     <div class="card text-center">
                     <div class="card-header">
