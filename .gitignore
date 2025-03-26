@@ -86,3 +86,5 @@ npm-debug.log
 yarn-error.log
 
 test.html
+dump.rdb
+celerybeat-schedule.db
