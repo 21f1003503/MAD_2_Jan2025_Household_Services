@@ -6,7 +6,7 @@ from application.database import db
 from application.models import User, Role
 from application.config import LocalDevelopmentConfig
 from application.celery_init import celery_init_app
-from application.tasks import monthly_report
+from application.tasks import monthly_report, daily_reminders
 
 from flask_security import Security, SQLAlchemyUserDatastore
 from werkzeug.security import generate_password_hash
@@ -90,8 +90,12 @@ from application.routes import *
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        crontab(minute='*/10'),
+        crontab(minute='*/2'),
         monthly_report.s(),
+    )
+    sender.add_periodic_task(
+        crontab(hour=19, minute=43),
+        daily_reminders.s()
     )
 
 if __name__ == "__main__":

@@ -2,8 +2,8 @@ export default {
     template: `
         <div v-if="userData.sp_verified_status == 'VERIFIED' && userData.flag == 'GREEN'">
             <h2 class="mt-2 mb-2">Welcome, {{ userData.full_name }}!</h2>
-            <div class="row border">
-                <div class="col-8" style="height: 700px; overflow-y: scroll">
+            <div class="row ">
+                <div class="col-8 bg-light" style="height: 675px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">Available Service Requests</h3>
                     <div v-if="userData.sp_availability == 'AVAILABLE'">
                         <table class="table table-hover table-striped table-bordered table-warning">
@@ -21,7 +21,7 @@ export default {
                                 <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="sr in userServReqs" v-if="sr.service_status != 'CLOSED'">
+                            <tbody v-for="sr in userServReqs" v-if="sr.service_status != 'CLOSED' && sr.service_status != 'NA'">
                                 <tr>
                                     <th scope="row">{{ sr.s_req_statusID }}</th>
                                     <td>{{ sr.s_reqID }}</td>
@@ -91,18 +91,17 @@ export default {
                         </table>
                     </div>
                 </div>
-                <div class="col-4" style="height: 700px; overflow-y: scroll">
+                <div class="col-4" style="height: 675px;">
                     <h3 class = "text-center mt-2">Your Profile</h3>
                     <div class="card text-center">
                     <div class="card-header">
                         ID: {{ userData.id }}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{ userData.full_name }}</h5>
-                        <h6 class="card-tex mt-2">Username: {{ userData.username }}</h6>
+                        <h4 class="card-title">{{ userData.full_name }}</h4>
+                        <h6 class="card-tex mt-4">Username: {{ userData.username }}</h6>
                         <h6 class="card-text">Pincode: {{ userData.pincode }}</h6>
                         <h6 class="card-text">Phone Number: +91 {{ userData.phone_number }}</h6>
-                        <h6 class="card-text">Complaints Against: {{ userData.complaint_against }}</h6>
                         <h6 class="card-text">Flag: {{ userData.flag }}</h6>
                     </div>
                     
@@ -112,7 +111,7 @@ export default {
         </div>
         <div v-else class="text-center" style="height: 700px;">
             <div class="text-center mx-auto" style="width: 700px; height: 300px;">
-            <h5 class="text-center mx-auto mt-5">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h5>
+                <h5 class="text-center mx-auto mt-5">WAIT FOR THE ADMIN TO VERIFY YOU... or you are Red flagged by the Admin!</h5>
             </div>
         </div>
     `,

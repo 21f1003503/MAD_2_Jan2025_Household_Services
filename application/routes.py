@@ -81,7 +81,8 @@ def cu_home():
         "cu_address": cus.cu_address,
         "pincode": cus.pincode,
         "flag": cus.flag,
-        "complaint_against": cus.complaint_against
+        "complaint_against": cus.complaint_against,
+        "phone_number": cus.phone_number
     })
 
 @app.route('/api/sp_home')
@@ -459,3 +460,22 @@ def send_reports():
     return{
         "result": res.result
     }
+
+@app.route('/check_pending_sps')
+def check_pending_sps():
+    allSPs = User.query.join(ServiceRequestStatus, User.id == ServiceRequestStatus.spID).filter(ServiceRequestStatus.status == 'PENDING').all()
+    sp_json = []
+
+    for sp in allSPs:
+        this_sp = {
+            "username": sp.username,
+            "full_name": sp.full_name,
+        }
+        sp_json.append(this_sp)
+    if sp_json:
+        return sp_json
+    else:
+        return{
+            "message": "No SP Found"
+        }
+        

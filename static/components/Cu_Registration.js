@@ -1,7 +1,7 @@
 export default {
     template: `
-        <div class="row border">
-            <div class="col" style="height: 750px;">
+        <div class="row">
+            <div class="col bg-light" style="height: 727px;">
                 <div class=" mx-auto mt-5 text-center" style="height: 650px; width: 500px;">
                     <div>
                         <h2 class="text-center">Customer Registration Page</h2>

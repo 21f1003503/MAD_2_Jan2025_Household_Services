@@ -1,16 +1,10 @@
 export default {
     template: `
         <div class="row ">
-            <div class="col-8 " style="height: 770px;" >
+            <div class="col-8 " style="height: 723px;" >
                 <h2>Welcome Admin, {{ userData.full_name }}</h2>
-                <router-link class="btn btn-primary my-2" to="/admin/services">Services</router-link>
-                <router-link class="btn btn-primary my-2" to="/admin/service_requests">Service Requests</router-link>
-                <router-link class="btn btn-primary my-2" to="/admin/customers">Customers</router-link>
-                <router-link class="btn btn-primary my-2" to="/admin/service_professionals">Service Professionals</router-link>
-                <router-link class="btn btn-primary my-2" to="/admin/complaints">Conflicts</router-link>
-                <button @click="csvExport" class="btn btn-warning my-2">Download CSV</button>
 
-                <div class="row border mt-3" style=" height: 500px; width: 800px; overflow-y: scroll; ">
+                <div class="bg-light row border mt-3" style=" height: 669px; width: 850px; overflow-y: scroll; ">
                     <div class="accordion mt-3 mx-auto" id="accordionExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
@@ -126,7 +120,7 @@ export default {
 
             </div>
 
-            <div class="col-4" style="height: 750px; overflow-y: scroll">
+            <div class="col-4 bg-light" style="height: 723px; overflow-y: scroll">
                 <h4 class="text-center mt-2">Unverified Service Professionals</h4>
                 <div v-for="sp in unverified_serv_profs" class="card mt-2 border-danger">
                     <div v-if="sp.serviceID" class="card-body text-danger">

@@ -1,10 +1,10 @@
 export default {
     template: `
         <div class="row border">
-            <div class="col" style="height: 750px;">
-                <div class=" mx-auto mt-5" style="height: 400px; width: 300px;">
-                    <div>
-                        <h2 class="text-center">Login Page</h2>
+            <div class="col bg-light" style="height: 750px;">
+                <div class=" mx-auto mt-5" style="height: 400px; width: 400px;">
+                    
+                        <h2 class="text-center mt-5">Login Page</h2>
                         
                         <div class="mx-2 mb-3 mt-5">
                             <label for="username" class="form-label">Email address:</label>
@@ -18,7 +18,7 @@ export default {
                             <button class="btn btn-primary mt-2" @click="userLogin">Login</button>
                         </div>
                         <p class="mx-2 mt-2 text-danger text-center">{{ message }}</p>
-                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -1,23 +1,64 @@
 export default {
     template: `
-        <div class="row ">
+        <div class="row " style="background-color: #e3f2fd;">
         
-            <div class="col-7  fs-2">
-                <i class="bi bi-facebook"> FixItNow</i>
-                
+            <div class="col-4  fs-2">
+                <i class="bi bi-facebook"></i>
                 <!--i class="bi bi-house-door"></i-->
+                    FixItNow
+            </div>
+
+            <div class="col-3">
+                <!--i class="bi bi-house-door"></i-->
+                <div v-if="loggedIn && userRoles.includes('admin')">
+                    <ul class="nav nav-pills mt-2">
+                        <li class="nav-item">
+                            <router-link class="nav-link active" to="/admin_dashboard"><i class="bi bi-house-door"></i></router-link>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"  role="button" aria-expanded="false">Admin</a>
+                            <ul class="dropdown-menu">
+                                <li><router-link class="dropdown-item" to="/admin/services">Services</router-link></li>
+                                <li><router-link class="dropdown-item" to="/admin/service_requests">Service Requests</router-link></li>
+                                <li><router-link class="dropdown-item" to="/admin/customers">Customers</router-link></li>
+                                <li><router-link class="dropdown-item" to="/admin/service_professionals">Service Professionals</router-link></li>
+                                <li><router-link class="dropdown-item" to="/admin/complaints">Conflicts</router-link></li>
+                                <li><router-link class="dropdown-item" to="/admin/service_request_status">Service Request Status</router-link></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button @click="csvExport" class="btn btn-warning btn-sm my-1">Download CSV</button>
+                        </li>  
+                    </ul>
+                </div>
+                <div v-if="loggedIn && userRoles.includes('customer') && !userRoles.includes('admin')">
+                    <ul class="nav nav-pills mt-2">
+                        <li class="nav-item">
+                            <router-link class="nav-link active" to="/cu_dashboard"><i class="bi bi-house-door"></i> Home</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link class="nav-link" to="/cu_profile"><i class="bi bi-person-circle"></i> {{ userUsername }}</router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div v-if="loggedIn && userRoles.includes('service_professional') && !userRoles.includes('admin')">
+                    <ul class="nav nav-pills mt-2">
+                        <li class="nav-item">
+                            <router-link class="nav-link active" to="/sp_dashboard"><i class="bi bi-house-door"></i> Home</router-link>
+                        </li>
+                    </ul>
+                </div>
             </div>
             
             <div class="col-3 ">
                 <form class = "d-flex">
-                    <div class="col-auto mt-2">
+                    <div v-if="loggedIn" class="col-auto mt-2">
                         <label for="search_bar" class="visually-hidden">Search</label>
                         <input type="text" class="form-control" id="search_bar" v-model="search_query.term" placeholder="Search">
                     </div>
-                    <div class="col-auto mt-2 my-2">
-                        <!--button @click="search" class="btn btn-primary ">Search</button-->
+                    <div v-if="loggedIn" class="col-auto mt-2 my-2">
                         <button @click="search" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
-                            Search
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </form>
@@ -96,7 +137,9 @@ export default {
                 "service_price": "",
                 "service_desc": ""
             },
-            userRoles: {}
+            userRoles: {},
+            userFullName: "",
+            userUsername: ""
         }
     },
     mounted() {
@@ -135,7 +178,19 @@ export default {
                 }
             })
             .then(response => response.json())
-            .then(data => this.userRoles = data.roles)
+            .then(data => {
+                this.userRoles = data.roles
+                this.userFullName = data.full_name
+                this.userUsername = data.username
+            })
+        },
+        csvExport(){
+            fetch('/api/export')
+            .then(response => response.json())
+            
+            .then(data => {
+                window.location.href = `/api/csv_result/${data.id}`                
+            })
         }
     }
 }

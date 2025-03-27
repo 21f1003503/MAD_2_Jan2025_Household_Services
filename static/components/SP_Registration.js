@@ -1,8 +1,8 @@
 export default {
     template: `
         <div class="row ">
-            <div class="col" style="height: 770px;">
-                <div class=" mx-auto mt-4 text-center" style="height: 725px; width: 500px; ">
+            <div class="col bg-light" style="height: 726px;">
+                <div class=" mx-auto mt-4 text-center" style="height: 727px; width: 500px; ">
                     <div>
                         <h2 class="text-center">Service Professional Registration Page</h2>
                         
@@ -48,7 +48,7 @@ export default {
                         </div>
                         <br>
                         <div>
-                            <button class="btn btn-success mt-2" @click="spRegister">REGISTER</button>
+                            <button class="btn btn-success btn-sm" @click="spRegister">REGISTER</button>
                         </div>
                         
                     </div>

@@ -3,18 +3,18 @@ export default {
         <div>
             
             <div v-if="userData.flag == 'RED'"  >
-                <div class="col border" style="height: 750px;">
+                <div class="col border" style="height: 730px;">
                 <h4 class="text-center mt-5">You Have Been RED Flagged By The Admin...</h4>
             </div>
             </div>
             <div v-if="userData.flag == 'GREEN'">
             <h2>Welcome, {{ userData.full_name }}!</h2>
             <div class="row ">
-                <div class="col-8 " style="height: 730px; overflow-y: scroll">
+                <div class="col-8 bg-light" style="height: 677px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">CHOOSE YOUR SERVICE</h3>
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class=" row row-cols-1 row-cols-md-3 g-4">
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#createSalonModal">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#createSalonModal">
                                 <img src="static/salon.jpg" class="card-img-top" alt="Salon">
                                 <div class="card-body">
                                     <h4 class="card-title text-center">SALON</h4>
@@ -23,8 +23,8 @@ export default {
                             </div>
                         </div>
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#createAppRepairModal">
-                            <img src="static/also appliance.avif" class="card-img-top" alt="Appliance">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#createAppRepairModal">
+                            <img src="static/appliance_repair_new.jpeg" class="card-img-top" alt="Appliance">
                             <div class="card-body">
                                 <h4 class="card-title text-center">APPLIANCE REPAIR</h4>
                                 <p class="card-text text-center">Specialized in repairing ACs, kitchen appliances like ovens and microwaves, laundry machines, and more.</p>
@@ -32,7 +32,7 @@ export default {
                             </div>
                         </div>
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#cleaningModal">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#cleaningModal">
                             <img src="static/also cleaner bw.avif" class="card-img-top" alt="Cleaning">
                             <div class="card-body">
                                 <h4 class="card-title text-center">CLEANING</h4>
@@ -42,7 +42,7 @@ export default {
                         </div>
 
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#createCarpentryModal">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#createCarpentryModal">
                                 <img src="static/also carpenter.avif" class="card-img-top" alt="Carpentry">
                                 <div class="card-body">
                                     <h4 class="card-title text-center">CARPENTER</h4>
@@ -52,7 +52,7 @@ export default {
                         </div>
 
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#createPlumbingModal">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#createPlumbingModal">
                                 <img src="static/also plumbing bw.avif" class="card-img-top" alt="Salon">
                                 <div class="card-body">
                                     <h4 class="card-title text-center">PLUMBING</h4>
@@ -62,7 +62,7 @@ export default {
                         </div>
 
                         <div class="col">
-                            <div class="card h-100" data-bs-toggle="modal" data-bs-target="#createElectricalModal">
+                            <div class="card h-100 bg-warning" style="--bs-bg-opacity: .4;" data-bs-toggle="modal" data-bs-target="#createElectricalModal">
                             <img src="static/also electrical.avif" class="card-img-top" alt="Electrical">
                             <div class="card-body">
                                 <h4 class="card-title text-center">ELECTRICAL</h4>
@@ -72,7 +72,7 @@ export default {
                         </div>
                     </div>
                 </div>
-                <div class="col-4 " style="height: 730px; overflow-y: scroll">
+                <div class="col-4 bg-light" style="height: 677px; overflow-y: scroll">
                     <h3 class="text-center mt-2">Your Service Requests</h3>
                     <div v-for="s in userServiceReqs" class = "card mt-2" v-if="s.s_reqID">
                         

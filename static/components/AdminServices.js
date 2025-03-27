@@ -1,15 +1,15 @@
 export default {
     template: `
-        <div class="row border">
-            <div class="col-8 border" style="height: 770px; overflow-y: scroll">
-                <div class="text-center mt-3 ">
+        <div class="row ">
+            <div class="col-8 " style="height: 721px; overflow-y: scroll">
+                <!--div class="text-center mt-3 ">
                     <button @click="create_csv" class="btn btn-outline-primary">Download Service Data</button>
-                </div>
-                <div class="border mx-auto mt-3">
+                </div-->
+                <div class=" mx-auto mt-3">
                     
-                    <router-link to="/admin_dashboard"><h2 class="text-center mt-2">EXISTING SERVICES</h2></router-link>
+                    <h2 class="text-center mt-2">EXISTING SERVICES</h2>
 
-                    <div v-for="service in allServices" v-if="service.serviceID" class="card mt-2">
+                    <div v-for="service in allServices" v-if="service.serviceID" class="card mt-2 mx-auto">
                         <div class="card-header">
                             {{ service.category }}
                         </div>
@@ -25,7 +25,7 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="col-4 border" style="height: 770px; overflow-y: scroll">
+            <div class="col-4 bg-light" style="height: 721px;">
                 <h3 class="text-center mt-2">CREATE SERVICE</h3>
                 <div class="mb-3">
                     <label for="category" class="form-label">Category:</label><br>

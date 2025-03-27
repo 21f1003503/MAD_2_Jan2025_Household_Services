@@ -22,6 +22,8 @@ import RegisterComplaint from './components/RegisterComplaint.js'
 import AdminComplaints from './components/AdminComplaints.js'
 import AdminServReqs from './components/AdminServReqs.js'
 import Create_SR from './components/Create_SR.js'
+import Cu_Profile from './components/Cu_Profile.js'
+import AdminSRS from './components/AdminSRS.js'
 
 const routes = [
     {path: '/',                                                           component: Home},
@@ -45,7 +47,9 @@ const routes = [
     {path: '/register_complaint/:s_reqID',     name: 'reg_complaint',     component: RegisterComplaint},
     {path: '/admin/complaints',                                           component: AdminComplaints},
     {path: '/admin/service_requests',                                     component: AdminServReqs},
-    {path: '/create_serv_req',                 name: 'create_sr',         component: Create_SR}
+    {path: '/create_serv_req',                 name: 'create_sr',         component: Create_SR},
+    {path: '/cu_profile',                                                 component: Cu_Profile},
+    {path: '/admin/service_request_status',                               component: AdminSRS}
 ]
 const router = new VueRouter({
     routes
@@ -55,10 +59,16 @@ const app = new Vue({
     el: "#app",
     router,
     template: `
-    <div class = "container">
-        <nav-bar></nav-bar>
-        <router-view></router-view>
-        <foot></foot>
+    <div class = "container-fluid">
+        <div class="col-12">
+            <nav-bar></nav-bar>
+        </div>
+        <div class="container my-4">
+            <router-view></router-view>
+        </div>
+        <div class="col-12">
+            <foot></foot>
+        </div>
     </div>
     `,
     data: {

@@ -52,6 +52,24 @@ def monthly_report():
 
     return "Monthly reports sent"
 
+@shared_task(ignore_results = False, name = 'daily_reminders')
+def daily_reminders():
+    allSPs = User.query.join(ServiceRequestStatus, User.id == ServiceRequestStatus.spID).filter(ServiceRequestStatus.status == 'PENDING').all()
+    sp_json = []
+
+    for sp in allSPs:
+        this_sp = {
+            "username": sp.username,
+            "full_name": sp.full_name,
+        }
+        sp_json.append(this_sp)
+
+    if allSPs:
+        for sp in allSPs:
+            message = format_report('templates/sp_daily_reminder.html', data=sp_json)
+            send_email(sp.username, subject="Service Professional Daily Reminder - FixItNow!", message=message)
+
+
 # activity triggered task (Async)
 @shared_task(ignore_results = False, name = 'service_request_status_update')
 def service_req_update(username, s_name, s_reqID, task_id):

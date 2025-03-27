@@ -1,9 +1,9 @@
 export default {
     template: `
-        <div class="row border">
+        <div class="row ">
             <div class="col" style="height: 770px;">
                 
-                <router-link to="/admin_dashboard"><h2 class="text-center mt-2">Customers</h2></router-link>
+                <h2 class="text-center mt-2">Customers</h2>
                 <div class="mt-2 mx-auto text-center" style="width: 1200px;">
                     <table class="table table-hover table-striped table-bordered table-warning">
                         <thead class="table-primary">
