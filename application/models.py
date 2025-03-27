@@ -34,10 +34,6 @@ class User(db.Model,UserMixin):
     # to access service details
     services_performed = db.relationship("Service", foreign_keys = [serviceID], backref = 'serv_profs')
 
-    # to access service requests
-    #service_requests = db.relationship("Service_Request", backref = "customer", cascade = "all, delete-orphan")
-    #serv_prof_requests = db.relationship('Service_Request', foreign_keys = "[Service_Request.spID]", back_populates = "service_professional")
-
     # validation
     @validates('pincode')
     def validate_pincode(self,key,value):
@@ -71,8 +67,6 @@ class Service(db.Model):
     sub_category = db.Column(db.String, nullable = False)
     service_desc = db.Column(db.String)
 
-    #serv_profs = db.relationship("User", backref = "services")
-
 # Service Request created by the customer
 class Service__Request(db.Model):
     s_reqID = db.Column(db.Integer, primary_key = True)
@@ -98,7 +92,6 @@ class ServiceRequestStatus(db.Model):
     status = db.Column(db.String, default = 'PENDING') # PENDING, ACCEPTED, REJECTED
 
     # relationships
-    #serv_request = db.relationship("Service__Request", foreign_keys = [s_reqID], backref = "serv_request_status", cascade = "all, delete-orphan")
     serv_professional = db.relationship("User", backref = "request_status")
 
 class Complaints(db.Model):

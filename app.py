@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_caching import Cache
-# import flask_excel as excel
 
 from application.database import db
 from application.models import User, Role
@@ -82,10 +81,8 @@ with app.app_context():
                                            )
         
     db.session.commit()
-#import application.celery.celery_schedule
 
 from application.routes import *
-# excel.init_excel(app)
 
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
@@ -94,7 +91,7 @@ def setup_periodic_tasks(sender, **kwargs):
         monthly_report.s(),
     )
     sender.add_periodic_task(
-        crontab(hour=19, minute=43),
+        crontab(hour=23, minute=15),
         daily_reminders.s()
     )
 

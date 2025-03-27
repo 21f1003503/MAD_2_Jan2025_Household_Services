@@ -12,5 +12,12 @@ The app contains two types of users:
 There is also an Admin, who will oversee the entire app. Admin has following responsibilities:
     1. Create new services.
     2. Verify the Service Professionals.
-    3. Resolve complaints by Customers as well as Service Professionals.
+    3. Resolve complaints by Customers.
     4. Flag suspecious Customers and Service Professionals from the app.
+
+Steps To run this project:
+    1. Flask --> python app.py
+    2. Mailhog: Mailhog
+    3. Redis: brew services start redis
+    4. Celery Worker: celery -A app:celery worker -l INFO
+    5. Celery Beat: celery -A app:celery beat -l INFO
