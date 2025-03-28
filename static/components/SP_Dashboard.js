@@ -2,7 +2,14 @@ export default {
     template: `
         <div v-if="userData.sp_verified_status == 'VERIFIED' && userData.flag == 'GREEN'">
             <h2 class="mt-2 mb-2">Welcome, {{ userData.full_name }}!</h2>
-            <div class="row ">
+            <div v-if="!userData.serviceID">
+                <div class="col bg-light" style="height: 675px; overflow-y: scroll">
+                    <div class="text-center mx-auto" style="width: 1200px; height: 300px;">
+                        <h5 class="text-center mx-auto mt-5">Your Associated Service Has Been Deleted By The Admin!</h5>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="row ">
                 <div class="col-8 bg-light" style="height: 675px; overflow-y: scroll">
                     <h3 class = "text-center mt-2">Available Service Requests</h3>
                     <div v-if="userData.sp_availability == 'AVAILABLE'">

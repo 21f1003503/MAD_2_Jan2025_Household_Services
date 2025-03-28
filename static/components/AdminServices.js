@@ -143,7 +143,12 @@ export default {
                 },
             })
             .then(response => response.json())
-            .then(data => setTimeout(() => {window.location.reload()}, 50))
+            .then(data => {
+                alert(data.message);
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 50); 
+            })
         }
     }
 }
