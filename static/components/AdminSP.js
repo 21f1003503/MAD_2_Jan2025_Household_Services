@@ -1,7 +1,7 @@
 export default {
     template: `
         <div class="row ">
-            <div class="col" style="height: 723px; overflow-x: scroll; overflow-y: scroll"">
+            <div class="bg-light col" style="height: 723px; overflow-x: scroll; overflow-y: scroll"">
                 <h2 class="text-center mt-2">Service Professionals</h2>
                 <div class="mt-2 mx-auto text-center" style="width: 1400px;">
                     <table class="table table-hover table-striped table-bordered table-warning">
