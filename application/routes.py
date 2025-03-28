@@ -296,7 +296,7 @@ def delete_service(serviceID):
     serv_req = Service__Request.query.filter_by(serviceID=serviceID).all()
     if serv_req:
         return{
-            "message": "Cannot Delete Service With an active service request"
+            "message": "Cannot Delete Service With an existing service request"
         }
 
     if service:
